@@ -1,0 +1,13 @@
+Draw a fantasy atlas map of the island of Numenor, from Tolkien's Unfinished Tales and the Akallabeth, landscape 16:9, in the style of a hand-painted illustrated fantasy map: painted terrain, drawn mountains and forests, serif labels, no border decoration, no compass clutter. Render at the highest resolution available (4K if possible). All labels in English, spelled exactly as given.
+
+Layout, north at the top. One island alone in the sea, shaped like a five-pointed star: a central region with five promontories pointing north, north-west, south-west, south-east and north-east, each separated by a wide bay. The island fills the frame.
+
+- Center: Mittalmar, a plain of grass and downs, with the sacred mountain Meneltarma rising from its middle, a tall peak with a flat crown. At the mountain's southern foot a valley, Noirinan, with tombs. South-east of the mountain the capital city Armenelos with a white tower and the White Tree. Call the lands around Armenelos Arandor.
+- North promontory: Forostar, rocky and treeless, with the city Ondosto on its western side and the peak Sorontil at its northern tip; label the northern cape North Cape.
+- North-west promontory: Andustar, fir-wooded in the north, with the haven Andunie on a bay labeled Bay of Andunie, the hill Oromet near Andunie with a tower, and the fragrant woods Nisimaldar on its southern shore around the haven Eldalonde. The bay between the north-west and south-west promontories is the Bay of Eldanna.
+- South-west promontory: Hyarnustar, mountainous on its western side, vineyards in the east. On the inland side of the Bay of Eldanna the sheep-country Emerie, with a lone white house labeled White House of Erendis.
+- South-east promontory: Hyarrostar, heavily forested with timber for shipbuilding. Between Hyarnustar and Hyarrostar a southern bay with the fishing town Nindamos at the mouth of the river Siril, which rises under the Meneltarma and winds south through marshes. A second river, Nunduine, flows west from the Meneltarma into the Bay of Eldanna past Eldalonde.
+- North-east promontory: Orrostar, cool grain-land. On its southern side the great harbor Romenna on the Bay of Romenna, with the islet Tol Uinen and the tower Calmindon on it. Inland from Romenna the region Hyarastorni.
+- Label the ocean Belegaer on the west side.
+
+Colors: deep blue sea, gold and green land, dark green forest on the south-east arm, grey-white mountains, muted parchment feel, like a professional fantasy atlas page.

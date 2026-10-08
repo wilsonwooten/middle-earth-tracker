@@ -1,0 +1,7 @@
+Edit the attached map. Keep everything exactly as it is except these corrections. Do not redraw, restyle, or move anything else, and keep the same size and framing.
+
+1. Remove the label "MINAS MORGUL" from inside Mordor near Isenmouthe. Instead, place Minas Morgul as a small pale city in a valley on the WEST face of the Ephel Duath, directly east of Osgiliath, about halfway between Osgiliath and the mountain crest, with a short road joining it to Osgiliath. Label it "Minas Morgul".
+2. Move the volcano away from Ered Lithui. Draw Mount Doom (Orodruin) as a lone cone with a red glow in the middle of the Plateau of Gorgoroth, roughly halfway between Cirith Ungol and Barad-dur. Label it "Mount Doom (Orodruin)". Remove the "(Mt. Dav" fragment.
+3. Keep only one Barad-dur: the dark tower in the east, on the southern spur of Ered Lithui, with the label "Barad-dur (The Dark Tower)". Remove the second Barad-dur label.
+4. Replace the garbled label just west of Osgiliath with "Minas Tirith", in the same font as the other city labels, next to the city already drawn there.
+5. Remove the duplicate labels: keep one "Cirith Ungol", one "Pelargir", one "Stonewain Valley", one "Mering Stream", one "Isenmouthe". Delete the misspelled "Isemhouthe".

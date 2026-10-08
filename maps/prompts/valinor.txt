@@ -1,0 +1,18 @@
+Draw a fantasy atlas map of Aman (Valinor) from Tolkien's Silmarillion, landscape 16:9, in the style of a hand-painted illustrated fantasy map: painted terrain, drawn mountains and forests, serif labels, no border decoration, no compass clutter. All labels in English, spelled exactly as given.
+
+Layout, following Tolkien's Ambarkanta sketch. Aman is a long crescent continent running north to south on the far west of the world, with the Great Sea (Belegaer) along its entire east coast. A huge mountain wall, the Pelori, runs the full length of the east coast just inland. Everything west of the Pelori is Valinor, a wide fertile land.
+
+Place these, north to south:
+- Far north-east tip: Helcaraxe (the Grinding Ice) reaching east toward the edge of the map.
+- North coast east of the Pelori: a cold barren strip labeled Araman.
+- North interior of Valinor: Formenos, a fortress.
+- North-west interior: Halls of Mandos, large dim halls near the western shore.
+- Center of the Pelori: Taniquetil, the tallest mountain, white-peaked, with a tiny hall on top (Ilmarin). Just north of it a deep notch through the mountains labeled Calacirya (the Pass of Light). Inside the pass on a green hill, the city Tirion on Tuna, a tall white city with a tower (Mindon). On the coast at the pass's eastern mouth, Alqualonde, the Haven of the Swans, with a harbor arch and swan-ships.
+- West of the Calacirya in the middle of Valinor: the city Valmar (Valimar) with golden gates, and just west of its gate the Two Trees on a green mound labeled Ezellohar. Nearby a ring of thrones, Mahanaxar.
+- West interior: Lorien, the gardens of Irmo, with Lake Lorellin and its island. North-west of it the Halls of Nienna by the western shore.
+- South-west: Pastures of Yavanna, wide fields. South-center: Woods of Orome, dense forest.
+- South-east, east of the Pelori: a dark narrow strip labeled Avathar, with Hyarmentir, a mountain, at its northern end.
+- Off the east coast, in the sea opposite the Calacirya: the island Tol Eressea with a small haven Avallone on its east side. Further east a scattered chain, the Enchanted Isles, in the Shadowy Seas.
+- Label the sea along the east coast Belegaer and the ocean on the far west Ekkaia.
+
+Colors: deep blue-green sea, pale gold and green land, grey-white mountains, dark green forests, muted parchment feel, like a professional fantasy atlas page. Aspect 16:9, as high resolution as possible.

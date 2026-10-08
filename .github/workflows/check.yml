@@ -1,0 +1,34 @@
+# Data and script checks on every push and pull request: cross-file joins in the data,
+# a syntax check of the inline script, and the app's own exception sweep in headless Chrome.
+name: Check
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate data
+        run: python3 tools/validate.py
+      - name: Syntax-check the inline script
+        run: |
+          python3 - <<'PY'
+          import re
+          s = open("index.html").read()
+          open("/tmp/inline.js", "w").write("".join(re.findall(r"<script>(.*?)</script>", s, re.S)))
+          PY
+          node --check /tmp/inline.js
+      - name: Self-test in headless Chrome
+        run: |
+          google-chrome --headless=new --disable-gpu --no-sandbox --virtual-time-budget=30000 \
+            --dump-dom "file://$PWD/index.html?selftest=1" > /tmp/dom.html 2>/dev/null
+          python3 - <<'PY'
+          import re, sys
+          d = open("/tmp/dom.html").read()
+          m = re.search(r'<pre id="selftest"[^>]*>(.*?)</pre>', d, re.S)
+          if not m: print("selftest output missing: the page did not run"); sys.exit(1)
+          lines = m.group(1).splitlines(); print("\n".join(lines))
+          bad = [l for l in lines[1:] if l.strip() and "offmap" not in l]
+          sys.exit(1 if bad else 0)
+          PY

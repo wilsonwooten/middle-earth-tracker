@@ -1,0 +1,272 @@
+=== Batch 1 (grid: 4x3; files: aegnor.png, aerin.png, aldarion.png, amandil.png, amrod.png, amroth.png, anarion.png, ancalime.png, angrod.png, annael.png, ar-pharazon.png, aragorn.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Aegnor: Noldorin elf prince, fierce eyes, flame-colored hair, light armor
+2. Aerin: Mortal woman of Dor-lomin, worn face, plain headscarf
+3. Aldarion: Numenorean mariner king, salt-streaked beard, sea-captain's cloak, ship brooch
+4. Amandil: Elderly Numenorean lord, white beard, star-of-Andunie circlet
+5. Amrod: Young Noldorin elf, russet hair, hunter's hood
+6. Amroth: Silvan elf king of Lorien, golden hair, leaf-shaped circlet
+7. Anarion: Numenorean warrior, dark beard, tall crowned helm with sun motif
+8. Ancalime: Numenorean queen, proud chin, high collar, small crown
+9. Angrod: Noldorin elf lord, braided dark hair, scarred cheek, mail collar
+10. Annael: Grey-elf, weathered face, fur-trimmed hood
+11. Ar-Pharazon: Numenorean tyrant king, gold crown, cruel mouth, gilded armor
+12. Aragorn: Ranger, stubbled, dark shoulder-length hair, hooded grey cloak, star brooch
+
+=== Batch 2 (grid: 4x3; files: aredhel.png, barahir.png, bard.png, beleg.png, beor.png, beren.png, bilbo.png, boromir.png, brandir.png, caranthir.png, celeborn.png, celebrimbor.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Aredhel: Noldorin elf lady in white, dark hair, silver circlet
+2. Barahir: Outlaw chieftain of Dorthonion, ragged beard, ring on a cord
+3. Bard: Grim archer of Lake-town, dark beard, bow over shoulder
+4. Beleg: Elf marchwarden, keen eyes, great bow, green hood
+5. Beor: Old mortal chieftain, grey braided beard, fur mantle
+6. Beren: Mortal hero, gaunt, missing right hand, wolf-pelt cloak
+7. Bilbo: Elderly hobbit, curly grey hair, waistcoat, round cheerful face
+8. Boromir: Gondorian captain, auburn hair and beard, great horn on baldric
+9. Brandir: Lame woodsman chieftain of Brethil, crutch, gentle face
+10. Caranthir: Dark-faced Noldorin elf, black hair, scowl, dark red tunic
+11. Celeborn: Tall silver-haired elf lord, grey robe
+12. Celebrimbor: Elf smith, dark hair tied back, leather apron, hammer
+
+=== Batch 3 (grid: 4x3; files: celegorm.png, cirdan.png, cirion.png, curufin.png, denethor.png, denethor-of-the-laiquendi.png, dior.png, dwarves.png, earendil.png, elendil.png, elendur.png, elfhelm.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Celegorm: Fair-haired Noldorin elf hunter with a great hound at his shoulder
+2. Cirdan: Ancient elf shipwright with a long beard, sea-grey robe
+3. Cirion: Aged Steward of Gondor, white hair, black and silver robe, no crown
+4. Curufin: Sharp-featured Noldorin elf, dark hair, smith's circlet, sly look
+5. Denethor: Steward of Gondor, grey-black hair, hollow eyes, black robe, white rod
+6. Denethor of the Laiquendi: Green-elf king, leaf crown, wood-brown garb
+7. Dior: Half-elven king of Doriath, dark hair, white gem on brow
+8. Dwarves: Dwarf of Belegost, braided forked beard, iron mask-helm
+9. Earendil: Elf-mariner, shining star on brow, white robe, silver hair
+10. Elendil: Tall Numenorean king, long grey beard, winged helm
+11. Elendur: Young Numenorean prince, dark hair, plain helm
+12. Elfhelm: Rider of Rohan marshal, blond braids, horse-tail helm
+
+=== Batch 4 (grid: 4x3; files: elrond.png, elros.png, elwing.png, eol.png, eomer.png, eorl.png, eowyn.png, erendis.png, erkenbrand.png, faramir.png, feanor.png, finduilas.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Elrond: Dark-haired half-elven lord, silver circlet, grave face
+2. Elros: First king of Numenor, dark hair, simple gold circlet
+3. Elwing: Elf maiden with a white seabird on her shoulder, dark hair
+4. Eol: Dark elf smith, black hair, black mail, hostile stare
+5. Eomer: Rider of Rohan, blond beard, horse-crest helm
+6. Eorl: Young golden-haired horse-lord, fur cloak, spear
+7. Eowyn: Shieldmaiden of Rohan, long golden hair, mail shirt, stern
+8. Erendis: Numenorean lady, dark hair in a braid, pearl at throat, sad eyes
+9. Erkenbrand: Old Rohan lord, red-grey beard, round shield
+10. Faramir: Gondorian ranger captain, dark hair, grey-green hood, thoughtful
+11. Feanor: Fiery Noldorin elf, black hair, burning eyes, jeweled circlet
+12. Finduilas: Golden-haired elf maiden of Nargothrond, flowers in hair
+
+=== Batch 5 (grid: 4x3; files: fingolfin.png, fingon.png, finrod.png, frodo.png, galadriel.png, gandalf.png, gil-galad.png, gimli.png, glaurung.png, gollum.png, grima.png, grimbold.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Fingolfin: Noldorin high king, dark hair, tall silver helm, blue mantle
+2. Fingon: Noldorin elf, dark braided hair with gold ribbons, bold grin
+3. Finrod: Golden-haired Noldorin king, green and gold, harp
+4. Frodo: Young hobbit, dark curly hair, blue eyes, cloak with leaf brooch
+5. Galadriel: Golden-haired elf queen, white robe, serene
+6. Gandalf: Grey wizard, long grey beard, pointed blue hat
+7. Gil-galad: Elf high king, dark hair, star-blazoned helm, spear
+8. Gimli: Dwarf, braided red beard, horned helm
+9. Glaurung: Golden dragon head, no wings, cold eyes
+10. Gollum: Pale wasted creature, huge eyes, few hairs, hunched
+11. Grima: Pale sly man, lank black hair, sunken eyes, fur collar
+12. Grimbold: Rohan captain, grey beard, dented helm
+
+=== Batch 6 (grid: 4x3; files: gwindor.png, hador.png, haladin.png, huor.png, hurin.png, idril.png, isildur.png, lalaith.png, legolas.png, luthien.png, mablung.png, maedhros.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Gwindor: Maimed elf of Nargothrond, grey-streaked hair, haunted
+2. Hador: Golden-haired mortal lord, fur cloak, warrior braid
+3. Haladin: Mortal woman warrior of the Haladin, dark hair, axe
+4. Huor: Tall mortal youth, dark hair, blue cloak
+5. Hurin: Mortal lord, short, dark beard, dragon-helm with golden crest
+6. Idril: Elf princess, golden hair, silver circlet
+7. Isildur: Numenorean prince, dark beard, winged helm, fierce
+8. Lalaith: Small mortal girl with flowers in her hair, laughing
+9. Legolas: Blond elf archer, green hood, quiver
+10. Luthien: Dark-haired elf maiden, nightingale, blue cloak
+11. Mablung: Elf captain of Doriath, grey hood, spear
+12. Maedhros: Tall red-haired Noldorin elf, missing right hand, grim
+
+=== Batch 7 (grid: 4x3; files: maeglin.png, maglor.png, marach.png, melian.png, meneldur.png, merry.png, mim.png, morgoth.png, morwen.png, nienor.png, nimrodel.png, ohtar.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Maeglin: Dark-haired elf, pale, black armor, sullen
+2. Maglor: Noldorin elf singer, dark hair, harp, sorrowful
+3. Marach: Tall mortal chieftain, yellow beard, fur mantle
+4. Melian: Maia queen, dark hair, veil, grey robe, otherworldly glow
+5. Meneldur: Numenorean star-gazing king, white beard, astrolabe
+6. Merry: Hobbit, brown curls, green cloak, Rohan helm
+7. Mim: Petty-dwarf, bald, long grey beard, bitter face
+8. Morgoth: Dark lord, iron crown with three jewels, burned face
+9. Morwen: Stern mortal lady, dark hair, grey cloak, proud
+10. Nienor: Golden-haired mortal maiden, troubled eyes
+11. Nimrodel: Silvan elf maiden, silver hair, water lilies
+12. Ohtar: Numenorean squire, young, carrying a broken sword
+
+=== Batch 8 (grid: 4x3; files: orodreth.png, pippin.png, sador.png, saeros.png, sam.png, saruman.png, sauron.png, smaug.png, theoden.png, theodred.png, thingol.png, thorin.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Orodreth: Fair-haired Noldorin elf king, worried face, circlet
+2. Pippin: Youngest hobbit, curly chestnut hair, Gondor black-and-silver livery
+3. Sador: Old lame mortal servant, wood-carver, kindly
+4. Saeros: Haughty elf of Doriath, sneer, fine robe
+5. Sam: Sturdy hobbit, sandy hair, gardener's apron
+6. Saruman: White wizard, long white beard, white robe, staff, cold eyes
+7. Sauron: Dark lord in spiked black helm, burning eyes
+8. Smaug: Red-gold dragon head, smoke, greedy eyes
+9. Theoden: Old king of Rohan, white beard, gold circlet, horse-crest helm
+10. Theodred: Rohan prince, blond, young, helm with horse crest
+11. Thingol: Grey-elf king, silver hair, tall crown, grey mantle
+12. Thorin: Dwarf king, long black beard with silver, blue hood, keys
+
+=== Batch 9 (grid: 4x3; files: thorins-company.png, tuor.png, turgon.png, turin.png, veantur.png, voronwe.png, witch-king.png, finarfin.png, finwe.png, ingwe.png, olwe.png, ungoliant.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Thorin's Company: Dwarf crowd: several bearded dwarves in colored hoods
+2. Tuor: Mortal man with swan-winged helm, blond hair
+3. Turgon: Noldorin king of Gondolin, dark hair, white and gold crown
+4. Turin: Grim dark-haired mortal, black sword, dragon-helm
+5. Veantur: Old Numenorean sea-captain, white beard, weathered
+6. Voronwe: Elf mariner, sea-grey cloak, salt-stained
+7. Witch-king: Nazgul: empty hood, iron crown floating, no face
+8. Finarfin: Golden-haired Noldorin king, gentle, gold circlet
+9. Finwe: First king of the Noldor, dark hair, tall silver crown, dignified
+10. Ingwe: High king of the Vanyar, golden hair, white robe, serene
+11. Olwe: King of the Teleri, silver hair, swan-prow brooch, sea-blue robe
+12. Ungoliant: Monstrous black spider, many eyes, drinking light
+
+=== Batch 10 (grid: 4x3; files: gwaihir.png, beorn.png, thranduil.png, dain.png, tom-bombadil.png, goldberry.png, butterbur.png, glorfindel.png, arwen.png, elladan-and-elrohir.png, haldir.png, treebeard.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Gwaihir: Windlord, great grey eagle head, piercing eye
+2. Beorn: Huge black-bearded man, bear-skin, thick arms, scowl
+3. Thranduil: Elvenking of Mirkwood, golden hair, crown of autumn leaves and berries, haughty
+4. Dain: Dwarf-lord of the Iron Hills, red braided beard, iron helm, axe
+5. Tom Bombadil: Merry old man, blue coat, yellow boots, battered hat with blue feather, red face
+6. Goldberry: River-daughter, golden hair, gown green as reeds, water lilies
+7. Butterbur: Fat bald innkeeper, red face, apron, flustered
+8. Glorfindel: Golden-haired elf lord, radiant, white and gold, noble
+9. Arwen: Dark-haired elf maiden, grey eyes, silver circlet, grey mantle
+10. Elladan and Elrohir: Twin dark-haired elves side by side, identical, grey cloaks
+11. Haldir: Marchwarden of Lorien, silver-blond hair, grey-green cloak, bow
+12. Treebeard: Ent: bark-skinned face, beard of twigs and moss, deep brown eyes
+
+=== Batch 11 (grid: 4x3; files: shelob.png, beregond.png, halbarad.png, imrahil.png, ghan-buri-ghan.png, mouth-of-sauron.png, manwe.png, varda.png, ulmo.png, aule.png, yavanna.png, orome.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Shelob: Giant spider head, clustered pale eyes, hairy black legs
+2. Beregond: Guard of the Citadel, black and silver livery, winged helm, honest face
+3. Halbarad: Dunedain ranger, grey cloak, star brooch, grim weathered face
+4. Imrahil: Prince of Dol Amroth, dark hair, silver swan-ship helm, blue and silver
+5. Ghan-buri-Ghan: Wild Man of the woods, squat, flat face, grass skirt, stone-tipped spear
+6. Mouth of Sauron: Tall man in black, mouth too wide, no visible eyes, high black helm
+7. Manwe: Lord of the Valar, sky-blue robe, white hair, eagle on shoulder, eyes like the sky
+8. Varda: Queen of the stars, black hair with stars in it, silver robe, serene face
+9. Ulmo: Lord of waters, sea-green beard like foam, fish-scale mail, water-crown
+10. Aule: Smith of the Valar, broad shoulders, red beard, hammer, leather apron
+11. Yavanna: Giver of fruits, green robe, hair of golden corn and leaves, crown of flowers
+12. Orome: Huntsman of the Valar, wild dark hair, great horn, antlered helm
+
+=== Batch 12 (grid: 4x3; files: mandos.png, nienna.png, tulkas.png, irmo.png, este.png, vaire.png, nessa.png, vana.png, eonwe.png, osse.png, uinen.png, miriel.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Mandos: Judge of the Dead, grey hooded robe, stern pale face, grave eyes
+2. Nienna: Lady of mourning, grey veil, tears on her cheeks, bowed head
+3. Tulkas: Champion of the Valar, golden hair and beard, laughing, bare brawny shoulders
+4. Irmo: Master of dreams, soft violet robe, half-closed eyes, poppy flowers
+5. Este: Healer of hurts, grey robe, calm face, closed eyes, pale lilies
+6. Vaire: The Weaver, dark robe woven with scenes, spindle, keen eyes
+7. Nessa: Dancer of the Valar, deer-brown hair in motion, light tunic, deer antlers behind
+8. Vana: The ever-young, girlish golden hair, spring flowers, bright smile
+9. Eonwe: Herald of Manwe, winged helm, bright banner, armor of white and gold
+10. Osse: Spirit of the waves, wild sea-green hair like spray, stormy eyes, shell armor
+11. Uinen: Lady of the seas, long hair spreading like weed, sad kind face, pearls
+12. Miriel: Noldorin elf lady, silver hair, needle and thread, weary gentle face
+
+=== Batch 13 (grid: 4x3; files: indis.png, amras.png, gothmog.png, thorondor.png, huan.png, ecthelion.png, haleth.png, gorlim.png, daeron.png, carcharoth.png, ancalagon.png, tar-miriel.png) ===
+Create ONE landscape image, aspect ratio 4:3, containing a 4x3 grid of 12 equal square tiles separated by thin dark lines. Each tile is a game-piece portrait icon of one character from Tolkien, all in this exact style:
+- flat cel-shaded illustration with bold dark outlines, like a board-game token; head and shoulders only, centered, filling about 80% of the tile
+- flat warm parchment background (#e8d9b5), no scenery, no frame inside the tile
+- simplified shapes, strong silhouette, high contrast, few details, so it still reads at 40 pixels
+- muted earth-tone palette with one accent color per character
+- absolutely no text, letters, numbers, labels, borders, signatures or watermarks
+Keep the same scale, angle, lighting and rendering for all 12 so they look like one matching set. Fill the tiles in this order, left to right, top to bottom:
+1. Indis: Vanyarin elf lady, golden hair, tall, serene, pale circlet
+2. Amras: Young russet-haired Noldorin elf hunter, twin of Amrod, bow
+3. Gothmog: Lord of Balrogs, shadow and flame, horned head, burning eyes, whip
+4. Thorondor: King of Eagles, huge golden-brown eagle head, fierce eye
+5. Huan: Great wolfhound of Valinor, grey, noble, intelligent eyes
+6. Ecthelion: Elf lord of the Fountain, silver helm with a tall spike, blue and silver
+7. Haleth: Mortal woman chieftain, dark cropped hair, axe, fierce
+8. Gorlim: Haggard outlaw of Dorthonion, hollow eyes, grief
+9. Daeron: Elf minstrel of Doriath, dark hair, flute, melancholy
+10. Carcharoth: Monstrous black wolf head, red jaws, burning eyes
+11. Ancalagon: Colossal black dragon head, winged, fire in the jaws
+12. Tar-Miriel: Numenorean queen, dark hair, silver crown, sorrowful dignity

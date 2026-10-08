@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Middle-earth Tracker</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root { --bg: #1e1a16; --panel: #2a241e; --ink: #e8dcc5; --muted: #a2947c; --line: #4a4036; --accent: #d4a24c; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 Georgia, "Times New Roman", serif; }
+  #app { display: grid; grid-template-columns: 340px 1fr; height: 100%; }
+  #panel { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; overflow: hidden; }
+  #panel header { padding: 14px 16px 10px; border-bottom: 1px solid var(--line); }
+  #panel h1 { margin: 0 0 8px; font-size: 18px; font-weight: normal; letter-spacing: .04em; color: var(--accent); }
+  select, button { font: inherit; background: #3a3229; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; }
+  select { width: 100%; }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button.on { background: var(--accent); color: #1e1a16; border-color: var(--accent); }
+  #searchWrap { position: relative; margin-top: 8px; }
+  #search { width: 100%; font: inherit; background: #3a3229; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+  #search:focus { outline: none; border-color: var(--accent); }
+  #matches { position: absolute; left: 0; right: 0; top: 100%; z-index: 50; background: #2a241e; border: 1px solid var(--accent); border-top: none; border-radius: 0 0 4px 4px; max-height: 260px; overflow: auto; display: none; }
+  #matches.show { display: block; }
+  .mt { display: flex; align-items: center; gap: 8px; padding: 5px 8px; cursor: pointer; }
+  .mt:hover, .mt.sel { background: #3a3229; }
+  .mt .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid; flex: none; overflow: hidden; background: #f3e9d2; }
+  .mt .dot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mt .dot.place { background: var(--accent); border-color: #fff3; width: 12px; height: 12px; margin: 0 5px; }
+  .mt .kind { margin-left: auto; color: var(--muted); font-size: 11px; }
+  #result { display: none; padding: 10px 16px; border-bottom: 1px solid var(--line); background: #241f1a; font-size: 13px; overflow: auto; flex: 0 1 auto; min-height: 74px; }
+  #result.collapsed .rb { display: none; }
+  .chev { cursor: pointer; color: var(--muted); font-size: 11px; padding: 2px 6px; user-select: none; }
+  .chev:hover { color: var(--ink); }
+  .collapsed .chev { transform: rotate(-90deg); }
+  #result.show { display: block; }
+  #result .rh { display: flex; align-items: center; gap: 10px; }
+  #result .rh .big { width: 44px; height: 44px; border-radius: 50%; border: 3px solid; overflow: hidden; background: #f3e9d2; flex: none; }
+  #result .rh .big img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #result .rn { color: var(--accent); font-size: 15px; }
+  #result .rl { color: var(--muted); font-size: 11.5px; font-style: italic; }
+  #result .rw { margin-top: 6px; }
+  #result .rw b { color: var(--accent); font-weight: normal; }
+  #result .chs { margin-top: 6px; max-height: 140px; overflow: auto; }
+  #result .chs div { padding: 2px 0; cursor: pointer; color: var(--muted); }
+  #result .chs div:hover { color: var(--ink); }
+  #result .chs div.cur { color: var(--ink); }
+  #result .chs span { color: var(--accent); }
+  #result .chs .ev { color: var(--ink); }
+  #result .chs .later { color: var(--muted); font-style: italic; }
+  @font-face { font-family: "Fell"; src: url(fonts/IMFellEnglish.woff2) format("woff2"); }
+  @font-face { font-family: "Fell"; font-style: italic; src: url(fonts/IMFellEnglishItalic.woff2) format("woff2"); }
+  @font-face { font-family: "Fell SC"; src: url(fonts/IMFellDWPicaSC.woff2) format("woff2"); }
+  .mapnames { pointer-events: none; }
+  .mapnames text { font-family: "Fell", Georgia, serif; fill: #2a1d10; stroke: #e9dcbd; stroke-linejoin: round; paint-order: stroke; }
+  .mapnames text.caps { font-family: "Fell SC", "Fell", Georgia, serif; }
+  .mapnames text.it { font-style: italic; }
+  .mapnames text.dark { fill: #0d0a08; stroke: #a9a39a; }
+  .inkhl { pointer-events: none; animation: inkpulse 1.8s ease-in-out infinite; }
+  body.still .inkhl { animation: none; opacity: var(--peak, 1); } /* ?still=1: frozen at peak for screenshots */
+  @keyframes inkpulse { 0%, 100% { opacity: .1; } 50% { opacity: var(--peak, 1); } }
+  .hlpt { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--accent); box-shadow: 0 0 0 3px #0008, 0 0 18px 6px #d4a24c99; animation: hlpulse 1.6s ease-out infinite; }
+  @keyframes hlpulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+  .hlcore { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; box-shadow: 0 0 6px 2px #000a; }
+  .leaflet-tooltip.hllbl { background: #000d; color: var(--accent); border: 1px solid var(--accent); font: 13px Georgia, serif; padding: 2px 8px; }
+  #result .trace { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
+  #result .trace button { font-size: 11px; padding: 2px 8px; }
+  #result .close { float: right; cursor: pointer; color: var(--muted); }
+  #result .close:hover { color: var(--ink); }
+  #result .other { margin-top: 6px; }
+  #result .other div { cursor: pointer; color: var(--muted); padding: 1px 0; }
+  #result .other div:hover { color: var(--ink); }
+  #soloBar, #jumpBar { display: none; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 900; background: #000c; color: var(--ink); border: 1px solid var(--accent); border-radius: 20px; padding: 5px 14px; font-size: 13px; pointer-events: auto; white-space: nowrap; }
+  #soloBar.show, #jumpBar.show { display: block; }
+  #jumpBar.show ~ #soloBar { top: 44px; }
+  #soloBar b, #jumpBar b { color: var(--accent); font-weight: normal; }
+  #soloBar span, #jumpBar span { margin-left: 10px; cursor: pointer; color: var(--muted); }
+  #soloBar span:hover, #jumpBar span:hover { color: var(--ink); }
+  #result .jump { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
+  #result .jump button { font-size: 11px; padding: 2px 8px; }
+  .char.dim { opacity: .35; }
+  .char.dead > span:nth-child(2) { color: var(--muted); }
+  .char.dead .where { color: #a35a4a; font-style: italic; }
+  .char.following { background: #2e2620; }
+  .char.following > span:nth-child(2) { color: var(--accent); }
+  .char .eye { margin-left: 6px; color: var(--muted); font-size: 10px; cursor: pointer; padding: 0 2px; }
+  .char .eye:hover { color: var(--ink); }
+  button.solo { font-size: 11px; padding: 1px 8px; margin-left: 6px; vertical-align: middle; }
+  #chapterBar { padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  #chapterBar .row { display: flex; gap: 6px; align-items: center; }
+  #chapterBar input[type=range] { flex: 1; accent-color: var(--accent); }
+  #chapterTitle { margin: 8px 0 2px; font-size: 15px; }
+  #chapterNum { color: var(--muted); font-size: 12px; }
+  #note { color: var(--muted); font-size: 13px; margin-top: 6px; font-style: italic; }
+  #summary { font-size: 13px; margin-top: 8px; }
+  #moves { font-size: 12.5px; color: var(--muted); margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--accent); }
+  #chapterBar { max-height: 48vh; overflow: auto; flex: 0 1 auto; min-height: 112px; }
+  #chapterHead { display: flex; align-items: center; gap: 6px; }
+  #chapterHead #chapterTitle { flex: 1; }
+  #chapterBar.collapsed #chapterText { display: none; }
+  #card { display: none; position: fixed; z-index: 2000; width: 300px; background: var(--panel); border: 1px solid var(--accent); border-radius: 8px; box-shadow: 0 6px 24px #000c; padding: 12px; pointer-events: none; font-size: 13px; }
+  #card.show { display: block; }
+  #card .head { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+  #card .big { width: 72px; height: 72px; border-radius: 50%; border: 3px solid; flex: none; overflow: hidden; background: #f3e9d2; color: #fff; font: bold 26px/66px Georgia, serif; text-align: center; text-shadow: 0 1px 2px #000; }
+  #card .big img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #card .name { font-size: 16px; color: var(--accent); }
+  #card .lin { color: var(--muted); font-size: 11.5px; font-style: italic; margin: 1px 0 2px; }
+  #card .at { color: var(--muted); font-size: 12px; }
+  #card .travel { margin-top: 6px; color: var(--muted); font-size: 12px; }
+  #card .travel b { color: var(--ink); font-weight: normal; }
+  #chars { flex: 1 1 0; min-height: 170px; overflow: auto; padding: 8px 16px; } /* the list gets what is left, never under 170px; the sections above shrink and scroll */
+  #panel header, #tools, #credits { flex: none; }
+  .char { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
+  .char .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff3; flex: none; }
+  .char .dot.img { width: 26px; height: 26px; border-width: 2px; border-style: solid; overflow: hidden; background: #f3e9d2; }
+  .char .dot.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .char.off { opacity: .4; }
+  .char .where { margin-left: auto; color: var(--muted); font-size: 12px; text-align: right; }
+  #tools { padding: 10px 16px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; }
+  #credits { padding: 8px 16px 12px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--line); }
+  #credits a { color: var(--muted); }
+  #map { background: #14110e; }
+  .cm { border-radius: 50%; border: 2px solid #fff; box-shadow: 0 1px 4px #0009; color: #fff; font: bold 11px/22px Georgia, serif; text-align: center; width: 26px; height: 26px; text-shadow: 0 1px 2px #000; }
+  .cm.img { width: 40px; height: 40px; background: #f3e9d2; border-width: 3px; overflow: hidden; }
+  .cm.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .leaflet-marker-icon:focus, .leaflet-marker-icon:focus-visible { outline: none; }
+  .arw { width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 8px solid; opacity: .8; margin: 1px 0 0 1px; filter: drop-shadow(0 0 1px #000); }
+  .pile { position: relative; cursor: pointer; }
+  .pile .pf { position: absolute; top: 0; }
+  .pile .badge { position: absolute; right: -8px; bottom: -6px; z-index: 20; background: var(--accent); color: #1e1a16; font: bold 11px/16px Georgia, serif; border-radius: 8px; padding: 0 5px; border: 1px solid #fff; }
+  .tray { display: flex; gap: 10px; justify-content: center; background: #000b; border: 1px solid var(--accent); border-radius: 8px; padding: 6px 8px 4px; }
+  .tray .tm { text-align: center; cursor: default; }
+  .tray .nm2 { color: #fff; font: 11px Georgia, serif; white-space: nowrap; margin-top: 2px; max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
+  .stem { width: 2px; height: 10px; background: var(--accent); margin: 0 auto; }
+  .nm { position: absolute; left: 50%; transform: translateX(-50%); margin-top: 2px; z-index: 5; white-space: nowrap; background: #000c; color: #fff; border: 1px solid; border-radius: 3px; padding: 0 5px; font: 11px Georgia, serif; }
+  .pin { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; box-shadow: 0 0 0 2px #0006; }
+  .pl { background: #000a; color: #fff; border: 1px solid var(--accent); border-radius: 3px; padding: 1px 5px; font-size: 11px; white-space: nowrap; }
+  .pl.unused { opacity: .55; border-color: #888; }
+  .leaflet-tooltip.lbl { background: #000b; color: #fff; border: none; font: 12px Georgia, serif; }
+  @media (max-width: 800px) { #app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } #panel { max-height: 45vh; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="panel">
+    <header>
+      <h1>Middle-earth Tracker</h1>
+      <select id="book"></select>
+      <div id="searchWrap">
+        <input id="search" type="search" placeholder="Find a character or place..." autocomplete="off" spellcheck="false">
+        <div id="matches"></div>
+      </div>
+    </header>
+    <div id="result"></div>
+    <div id="chapterBar">
+      <div class="row">
+        <button id="prev" title="Previous chapter (left arrow)">&lt;</button>
+        <input type="range" id="slider" min="0" max="0" value="0">
+        <button id="next" title="Next chapter (right arrow)">&gt;</button>
+      </div>
+      <select id="chapterSel" style="margin-top:8px"></select>
+      <div id="chapterHead"><div id="chapterTitle"></div><span class="chev" data-sec="chapter" title="Collapse or expand">&#9660;</span></div>
+      <div id="chapterText">
+        <div id="chapterNum"></div>
+        <div id="note"></div>
+        <div id="summary"></div>
+        <div id="moves"></div>
+      </div>
+    </div>
+    <div id="card"></div>
+    <div id="chars"></div>
+    <div id="tools">
+      <button id="toggleFit" class="on" title="Zoom to the current markers and routes whenever the chapter changes">Auto-fit</button>
+      <button id="togglePaths" class="on">Paths</button>
+      <button id="toggleLabels">Place labels</button>
+      <button id="toggleNames" style="display:none">Map names</button>
+      <button id="toggleEdit">Edit places</button>
+      <button id="toggleAlt" style="display:none">Aged look</button>
+      <button id="exportBtn" style="display:none">Copy places JSON</button>
+      <button id="exportShapesBtn" style="display:none">Copy shapes JSON</button>
+      <button id="resetBtn" style="display:none">Reset edits</button>
+    </div>
+    <div id="credits"></div>
+  </aside>
+  <div id="map"><div id="jumpBar"></div><div id="soloBar"></div></div>
+</div>
+
+<script src="data/places.js"></script>
+<script src="data/shapes.js"></script>
+<script src="data/shapes-svg.js"></script>
+<script src="data/labels-gondor.js"></script>
+<script src="data/place-events.js"></script>
+<script src="data/deaths.js"></script>
+<script src="data/hobbit-lotr.js"></script>
+<script src="data/silmarillion.js"></script>
+<script src="data/unfinished-tales.js"></script>
+<script src="icons/manifest.js"></script>
+<script src="data/icon-colors.js"></script>
+<script src="data/summaries-hobbit-lotr.js"></script>
+<script src="data/summaries-silmarillion.js"></script>
+<script src="data/summaries-unfinished-tales.js"></script>
+<script src="data/extra-cast.js"></script>
+<script src="data/lineage.js"></script>
+<script>
+// Merge the second-tier cast and its notes into the base data.
+for (const b of BOOKS) {
+  const ex = (window.EXTRA_CAST || {})[b.id] || {}, nx = (window.EXTRA_NOTES || {})[b.id] || {};
+  for (const ch of b.chapters) {
+    if (ex[ch.n]) ch.where = Object.assign({}, ch.where || {}, ex[ch.n]);
+    if (nx[ch.n]) { const S = (window.SUMMARIES[b.id] = window.SUMMARIES[b.id] || {}); S[ch.n] = S[ch.n] || {}; S[ch.n].who = Object.assign({}, S[ch.n].who || {}, nx[ch.n]); }
+  }
+}
+const MAPS = {
+  thirdage:  { short: "Third Age", file: "maps/third-age.jpg", w: 10000, h: 5455, credit: 'Third Age map by <a href="https://github.com/k1tesurfen/mapome">k1tesurfen (mapome)</a>, CC BY-SA 4.0, parchment render shared on r/lotr.' },
+  beleriand: { short: "Beleriand", file: "maps/beleriand.jpg", alt: "maps/beleriand-aged.jpg", w: 6000, h: 4000, credit: 'Beleriand map by <a href="https://www.deviantart.com/starcave/art/Beleriand-Map-935208788">Starcave / Hope Maps</a>, CC BY-SA 3.0.' },
+  shire:   { short: "Shire", file: "maps/shire.jpg", w: 4096, h: 2288, credit: "The Shire: generated with Gemini, redrawn from Christopher Tolkien's map \"A Part of the Shire\" in The Fellowship of the Ring. Layout after the original; the drawing is new." },
+  valinor: { short: "Valinor", file: "maps/valinor.jpg", w: 4096, h: 2288, credit: "Valinor: generated with Gemini from a text description based on Tolkien's Ambarkanta sketch. Original drawing." },
+  gondor: { short: "Gondor", file: "maps/gondor.jpg", w: 4096, h: 3300, credit: "Gondor and Mordor: terrain generated with Gemini from Christopher Tolkien's map in The Return of the King; names drawn by the app in his wording." },
+  numenor:   { short: "Numenor", file: "maps/numenor.jpg", w: 4096, h: 2288, credit: "Numenor: generated with Gemini, redrawn from Shelly Shapiro's map in Unfinished Tales. Layout after the original; the drawing is new." },
+};
+// Character icons: drop PNGs into icons/ named per icons/CHARACTERS.tsv; ICONS is filled by icons/manifest.js.
+const ICONS = (window.ICONS || {});
+const PALETTE = ["#e6194b","#3cb44b","#4363d8","#f58231","#911eb4","#42d4f4","#f032e6","#bfef45","#fabed4","#469990","#dcbeff","#9A6324","#fffac8","#800000","#aaffc3","#808000","#ffd8b1","#000075","#a9a9a9","#ffe119"];
+
+// --- state -------------------------------------------------------------
+const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+let places = JSON.parse(JSON.stringify(PLACES));
+let shapes = JSON.parse(JSON.stringify(SHAPES));
+const savedShapes = store.get("shapeEdits", null);
+if (savedShapes) for (const m in savedShapes) Object.assign(shapes[m] = shapes[m] || {}, savedShapes[m]);
+const saved = store.get("placeEdits", null);
+if (saved) for (const m in saved) Object.assign(places[m] = places[m] || {}, saved[m]);
+let book = null, chIdx = 0, curMap = null, showPaths = true, showLabels = false, editMode = false;
+const altOn = new Set(store.get("altMaps", []));
+const hidden = new Set(store.get("hiddenChars", []));
+const expanded = new Set();
+let solo = null; // character name when "Follow" is on: only they are drawn
+let mapJump = null; // map id while "View on the X map" is on: same chapter, other map; cleared on a chapter change
+let autoFit = store.get("autoFit", true), needFit = true;
+
+// --- map ---------------------------------------------------------------
+const map = L.map("map", { crs: L.CRS.Simple, minZoom: -5, maxZoom: 3, zoomSnap: 0.25, attributionControl: false });
+let overlay = null, nameLayer = null, fitZoom = 0;
+let showNames = store.get("mapNames", true);
+const layers = { hl: L.layerGroup().addTo(map), markers: L.layerGroup().addTo(map), paths: L.layerGroup().addTo(map), labels: L.layerGroup().addTo(map), edit: L.layerGroup().addTo(map) };
+let hlName = null; // place currently highlighted
+function toLL(mapId, pct) { const M = MAPS[mapId]; return L.latLng(-pct[1] / 100 * M.h, pct[0] / 100 * M.w); }
+function toPct(mapId, ll) { const M = MAPS[mapId]; return [+(ll.lng / M.w * 100).toFixed(2), +(-ll.lat / M.h * 100).toFixed(2)]; }
+function mapBounds() { const M = MAPS[curMap]; return L.latLngBounds([[-M.h, 0], [0, M.w]]); }
+function setMap(id, force) {
+  if (curMap === id && !force) return;
+  const same = curMap === id;
+  if (!same) { layers.hl.clearLayers(); hlName = null; }
+  curMap = id;
+  const M = MAPS[id], bounds = [[-M.h, 0], [0, M.w]];
+  if (overlay) overlay.remove();
+  overlay = L.imageOverlay(M.alt && altOn.has(id) ? M.alt : M.file, bounds).addTo(map).bringToBack();
+  if (nameLayer) { nameLayer.remove(); nameLayer = null; }
+  if (showNames && (window.MAP_LABELS || {})[id]) nameLayer = namesOverlay(id).addTo(map);
+  document.getElementById("toggleNames").style.display = (window.MAP_LABELS || {})[id] ? "" : "none";
+  document.getElementById("toggleNames").classList.toggle("on", showNames);
+  if (!same) {
+    // Map switch: stop any zoom animation in flight, then fit without animating so a fast
+    // scrub through chapters cannot leave the new map at the old map's zoom.
+    map.stop();
+    map.setMaxBounds(null);
+    map.fitBounds(bounds, { animate: false });
+    map.setMaxBounds(L.latLngBounds(bounds).pad(0.08));
+    fitZoom = map.getZoom();
+    needFit = true;
+    // Once the image is in, fit the view: to the highlighted place if there is one (a map jump
+    // from a place result), otherwise to the markers.
+    overlay.once("load", () => { if (curMap !== id) return; if (hlName) { needFit = false; render(); showPlace(hlName, allNames().places.get(hlName) || [id]); } else { needFit = true; render(); } });
+  }
+  document.getElementById("credits").innerHTML = M.credit;
+  const b = document.getElementById("toggleAlt"); b.style.display = M.alt ? "" : "none"; b.classList.toggle("on", altOn.has(id));
+}
+
+// Map names for maps rendered without text (data/labels-*.js): one SVG overlay the size of the
+// map, text in image pixels so it scales with the map like printed lettering. Curved names run
+// along a path; straight ones sit at a point with an optional rotation.
+const LABEL_KIND = { giant: { s: 250, ls: .5, caps: 1 }, region: { s: 100, ls: .35, caps: 1 }, range: { s: 90, ls: .3, caps: 1 },
+                     area: { s: 80, ls: .25, caps: 1 }, river: { s: 60, ls: .06, it: 1 }, place: { s: 56, ls: .04 }, note: { s: 48, ls: .02, it: 1 } };
+function namesOverlay(m) {
+  const M = MAPS[m], W = M.w, H = M.h, esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const px = p => `${(p[0] / 100 * W).toFixed(0)},${(p[1] / 100 * H).toFixed(0)}`;
+  let defs = "", body = "";
+  window.MAP_LABELS[m].forEach((l, i) => {
+    const K = LABEL_KIND[l.k] || LABEL_KIND.place, s = l.s || K.s, ls = l.ls != null ? l.ls : K.ls;
+    const cls = [K.caps ? "caps" : "", K.it ? "it" : "", l.d ? "dark" : ""].join(" ").trim();
+    const attrs = `class="${cls}" font-size="${s}" letter-spacing="${(ls * s).toFixed(1)}" stroke-width="${(s * 0.14).toFixed(1)}"`;
+    if (l.p) {
+      // Extend the path well past both ends: a textPath drops any glyph that runs off the path.
+      const P = l.p.map(q => [q[0] / 100 * W, q[1] / 100 * H]), n = P.length, L = P.slice(1).reduce((a, q, j) => a + Math.hypot(q[0] - P[j][0], q[1] - P[j][1]), 0);
+      const ext = (a, b) => { const d = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1, k = L * 0.6 / d; return [b[0] + (b[0] - a[0]) * k, b[1] + (b[1] - a[1]) * k]; };
+      const Q = [ext(P[1], P[0]), ...P, ext(P[n - 2], P[n - 1])];
+      defs += `<path id="nm${i}" d="M${Q.map(q => q[0].toFixed(0) + "," + q[1].toFixed(0)).join(" L")}" fill="none"/>`;
+      body += `<text ${attrs} text-anchor="middle"><textPath href="#nm${i}" startOffset="50%">${esc(l.t)}</textPath></text>`;
+    } else {
+      const x = l.x / 100 * W, y = l.y / 100 * H;
+      body += `<text ${attrs} x="${x.toFixed(0)}" y="${y.toFixed(0)}" text-anchor="middle" dominant-baseline="middle"${l.r ? ` transform="rotate(${l.r} ${x.toFixed(0)} ${y.toFixed(0)})"` : ""}>${esc(l.t)}</text>`;
+    }
+  });
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = `<defs>${defs}</defs>${body}`;
+  return L.svgOverlay(svg, [[-H, 0], [0, W]], { className: "mapnames", interactive: false });
+}
+
+// --- derived positions ---------------------------------------------------
+function chapterMap(ch) { return ch.map || book.map; }
+// Positions at chapter i: walk chapters 0..i on the same map, sticky per character.
+function positionsAt(i) {
+  const m = mapJump || chapterMap(book.chapters[i]);
+  const pos = {}, hist = {};
+  for (let k = 0; k <= i; k++) {
+    const ch = book.chapters[k];
+    for (const [who, pl] of Object.entries(ch.where || {})) {
+      pos[who] = pl;
+      if (pl) { (hist[who] = hist[who] || []); const h = hist[who]; if (h[h.length - 1] !== pl) h.push(pl); }
+    }
+  }
+  return { map: m, pos, hist };
+}
+// Ring and route colour: a softened standout colour from the character's icon
+// (data/icon-colors.js), falling back to the palette for anyone without an icon.
+function colorFor(name) {
+  const c = (window.ICON_COLORS || {})[name];
+  if (c) return c;
+  const names = allCharacters();
+  return PALETTE[names.indexOf(name) % PALETTE.length];
+}
+let _chars = null;
+function allCharacters() {
+  if (_chars) return _chars;
+  const s = [];
+  for (const ch of book.chapters) for (const who of Object.keys(ch.where || {})) if (!s.includes(who)) s.push(who);
+  return _chars = s;
+}
+function initials(name) { const p = name.replace(/'s.*$/, "").split(/[\s-]+/); return p.length > 1 ? (p[0][0] + p[1][0]).toUpperCase() : name.slice(0, 2); }
+
+// --- render --------------------------------------------------------------
+let lastRendered = null;
+function render() {
+  const ch = book.chapters[chIdx];
+  if (lastRendered !== book.id + ":" + chIdx) { expanded.clear(); mapJump = null; lastRendered = book.id + ":" + chIdx; }
+  const { map: m, pos, hist } = positionsAt(chIdx);
+  setMap(m);
+  layers.markers.clearLayers(); layers.paths.clearLayers(); layers.labels.clearLayers();
+  document.getElementById("chapterTitle").textContent = ch.title;
+  document.getElementById("chapterNum").textContent = book.title + " -- " + ch.n;
+  document.getElementById("note").textContent = ch.note || "";
+  const S = ((window.SUMMARIES || {})[book.id] || {})[ch.n] || {};
+  document.getElementById("summary").textContent = S.summary || "";
+  document.getElementById("moves").textContent = S.moves || "";
+  document.getElementById("moves").style.display = S.moves ? "" : "none";
+  document.getElementById("slider").value = chIdx;
+  document.getElementById("chapterSel").value = chIdx;
+
+  // group present characters by place for spreading
+  const groups = {};
+  for (const [who, pl] of Object.entries(pos)) {
+    if (!pl || hidden.has(who)) continue;
+    if (solo && who !== solo) continue;
+    if (!places[m][pl]) continue;
+    (groups[pl] = groups[pl] || []).push(who);
+  }
+  const markerLL = {};
+  const fitPts = [];
+  const zin = Math.max(0, map.getZoom() - fitZoom);
+  const sz = Math.round(40 * Math.min(1.6, 1 + zin * 0.2)), half = sz / 2;
+  const face = who => { const ic = ICONS[who]; return ic
+    ? `<div class="cm img" style="border-color:${colorFor(who)};width:${sz}px;height:${sz}px"><img src="icons/${ic}" alt="${who}"></div>`
+    : `<div class="cm" style="background:${colorFor(who)};width:${sz}px;height:${sz}px;line-height:${sz - 4}px">${initials(who)}</div>`; };
+  const hook = (mk, who) => { mk.on("mouseover", e => showCard(who, e.originalEvent)); mk.on("mousemove", e => moveCard(e.originalEvent)); mk.on("mouseout", hideCard); };
+  for (const [pl, whos] of Object.entries(groups)) {
+    const ll = toLL(m, places[m][pl]);
+    fitPts.push(ll);
+    whos.forEach(w => markerLL[w] = ll);
+    if (whos.length === 1) {
+      const who = whos[0];
+      hook(L.marker(ll, { icon: L.divIcon({ className: "", html: face(who), iconSize: [sz, sz], iconAnchor: [half, half] }), zIndexOffset: 1000 }).addTo(layers.markers), who);
+      continue;
+    }
+    // several characters at one place: a stacked pile at the exact spot, click to open a tray
+    const open = expanded.has(m + "|" + pl);
+    const step = Math.round(sz * 0.28), shown = Math.min(whos.length, 4);
+    const pileW = sz + step * (shown - 1);
+    const pile = `<div class="pile" style="width:${pileW}px;height:${sz}px">` +
+      whos.slice(0, shown).map((w, i) => `<div class="pf" style="left:${i * step}px;z-index:${10 - i}">${face(w)}</div>`).join("") +
+      (whos.length > shown ? `<div class="badge">+${whos.length - shown}</div>` : "") + `</div>`;
+    const pm = L.marker(ll, { icon: L.divIcon({ className: "", html: pile, iconSize: [pileW, sz], iconAnchor: [half, half] }), zIndexOffset: 1200, keyboard: false }).addTo(layers.markers);
+    pm.bindTooltip(`${whos.length} at ${pl}`, { className: "lbl", direction: "top", offset: [pileW / 2 - half, -half] });
+    pm.on("click", () => { const k = m + "|" + pl; expanded.has(k) ? expanded.delete(k) : expanded.add(k); render(); });
+    if (!open) continue;
+    // tray: members in a row above the place, each hoverable, joined to the spot by a stem
+    const cell = sz + 10, trayW = cell * whos.length;
+    const tray = `<div class="tray" style="width:${trayW}px">` + whos.map(w => `<div class="tm" data-who="${w.replace(/"/g, "&quot;")}">${face(w)}<div class="nm2">${w}</div></div>`).join("") + `</div><div class="stem"></div>`;
+    const tm = L.marker(ll, { icon: L.divIcon({ className: "tray-marker", html: tray, iconSize: [trayW, sz + 24], iconAnchor: [trayW / 2, sz + 24 + half + 6] }), zIndexOffset: 1500, keyboard: false }).addTo(layers.markers);
+    const el = tm.getElement();
+    if (el) el.querySelectorAll(".tm").forEach(d => { const w = d.dataset.who; d.addEventListener("mouseenter", e => showCard(w, e)); d.addEventListener("mousemove", moveCard); d.addEventListener("mouseleave", hideCard); });
+  }
+  if (showPaths) for (const [who, h] of Object.entries(hist)) {
+    if (hidden.has(who) || h.length < 2) continue;
+    if (solo && who !== solo) continue;
+    // Split the path wherever the character was somewhere not on this map, so no line is drawn across the gap.
+    const runs = [[]];
+    h.forEach((p, i) => { if (places[m][p]) runs[runs.length - 1].push(i === h.length - 1 && markerLL[who] ? markerLL[who] : toLL(m, places[m][p])); else if (runs[runs.length - 1].length) runs.push([]); });
+    for (const pts of runs) if (pts.length > 1) {
+      fitPts.push(...pts);
+      // Casing under the dash so a route reads on any map: a light halo, then a dark edge. The
+      // followed character's route is heavier.
+      const w = solo === who ? 4 : 3;
+      L.polyline(pts, { color: "#f6ecd4", weight: w + 4, opacity: .45, interactive: false }).addTo(layers.paths);
+      L.polyline(pts, { color: "#1a120a", weight: w + 2, opacity: .5, dashArray: "6 6", interactive: false }).addTo(layers.paths);
+      L.polyline(pts, { color: colorFor(who), weight: w, opacity: .95, dashArray: "6 6" }).addTo(layers.paths);
+      // small arrowheads along each leg, spaced in screen pixels so they stay sparse at any zoom
+      for (let k = 1; k < pts.length; k++) {
+        const a = map.latLngToLayerPoint(pts[k - 1]), b = map.latLngToLayerPoint(pts[k]);
+        const len = a.distanceTo(b); if (len < 40) continue;
+        const ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+        const n = Math.max(1, Math.floor(len / 160));
+        for (let j = 1; j <= n; j++) {
+          const t = j / (n + 1), pt = L.point(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
+          L.marker(map.layerPointToLatLng(pt), { interactive: false, keyboard: false, icon: L.divIcon({ className: "", iconSize: [10, 10], iconAnchor: [5, 5],
+            html: `<div class="arw" style="border-left-color:${colorFor(who)};transform:rotate(${ang}deg)"></div>` }) }).addTo(layers.paths);
+        }
+      }
+    }
+  }
+  const pins = ch.pins || [];
+  for (const pl of pins) if (places[m][pl]) L.marker(toLL(m, places[m][pl]), { icon: L.divIcon({ className: "", html: '<div class="pin"></div>', iconSize: [10, 10], iconAnchor: [5, 5] }) }).bindTooltip(pl, { className: "lbl", direction: "top" }).addTo(layers.markers);
+  if (showLabels) for (const [pl, pct] of Object.entries(places[m])) L.marker(toLL(m, pct), { icon: L.divIcon({ className: "", html: `<div class="pl">${pl}</div>`, iconAnchor: [0, 0] }), interactive: false }).addTo(layers.labels);
+
+  if (needFit) {
+    needFit = false;
+    const size = map.getSize();
+    if (autoFit && size.x > 0 && size.y > 0) {
+      // whole-map zoom, derived fresh from the container size so a resize or an early call cannot skew it
+      fitZoom = map.getBoundsZoom(mapBounds(), false);
+      const pins = (ch.pins || []).filter(p => places[m][p]).map(p => toLL(m, places[m][p]));
+      const all = fitPts.concat(pins);
+      const cap = Math.min(fitZoom + 1.75, -0.25);              // never closer than about 85% of native pixels
+      if (all.length) {
+        const b = L.latLngBounds(all);
+        const single = all.length === 1 || (b.getNorth() === b.getSouth() && b.getEast() === b.getWest());
+        if (single) map.setView(all[0], Math.min(fitZoom + 1.25, cap), { animate: false });
+        else map.fitBounds(b, { padding: [90, 90], maxZoom: cap, animate: false });
+        if (map.getZoom() < fitZoom) map.setZoom(fitZoom, { animate: false });
+        map.panInsideBounds(mapBounds(), { animate: false });
+      } else map.fitBounds(mapBounds(), { animate: false });
+    }
+  }
+  // character list
+  const list = document.getElementById("chars");
+  hideCard(); // rows are rebuilt, so a card opened from a row would otherwise never get its mouseleave
+  list.innerHTML = "";
+  const seen = allCharacters().filter(c => c in pos);
+  for (const who of seen) {
+    const d = document.createElement("div"), dead = deathOf(who);
+    d.className = "char" + (hidden.has(who) ? " off" : "") + (dead ? " dead" : "") + (solo && who !== solo ? " dim" : "") + (solo === who ? " following" : "");
+    const ic = ICONS[who];
+    const dot = ic ? `<span class="dot img" style="border-color:${colorFor(who)}"><img src="icons/${ic}" alt=""></span>` : `<span class="dot" style="background:${colorFor(who)}"></span>`;
+    const at = dead ? `${dead.i === chIdx ? "dies here" : "died " + dead.ch.n}${dead.place ? ", " + dead.place : ""}` : pos[who] ? (places[m][pos[who]] ? pos[who] : pos[who] + " (not on this map)") : "off the map";
+    d.innerHTML = `${dot}<span>${who}</span><span class="where">${at}</span><span class="eye" title="${hidden.has(who) ? "Show on the map" : "Hide from the map"}">${hidden.has(who) ? "&#9675;" : "&#9679;"}</span>`;
+    // Click a name to follow them (again to stop); the eye at the right edge hides or shows them.
+    d.onclick = () => { solo = solo === who ? null : who; needFit = true; render(); searchEl.value = solo || ""; if (solo) showCharacter(who, true); else { document.getElementById("result").classList.remove("show"); clearHighlight(); } };
+    d.querySelector(".eye").onclick = e => { e.stopPropagation(); hidden.has(who) ? hidden.delete(who) : hidden.add(who); store.set("hiddenChars", [...hidden]); render(); };
+    d.onmouseenter = e => showCard(who, e); d.onmousemove = moveCard; d.onmouseleave = hideCard;
+    list.appendChild(d);
+  }
+  store.set("last", { book: book.id, ch: chIdx });
+  const jbar = document.getElementById("jumpBar");
+  if (mapJump) {
+    jbar.innerHTML = `Viewing the <b>${MAPS[mapJump].short}</b> map at ${ch.n}; the chapter is on the ${MAPS[chapterMap(ch)].short} map<span id="jumpOff" title="Back to the chapter's map">back</span>`; jbar.classList.add("show");
+    document.getElementById("jumpOff").onclick = () => { mapJump = null; needFit = true; render(); const q = document.getElementById("search").value; if (q && names && names.places.has(q)) showPlace(q, names.places.get(q), false); };
+  } else jbar.classList.remove("show");
+  const sbar = document.getElementById("soloBar");
+  if (solo) { const sp = pos[solo]; sbar.innerHTML = `Following <b>${solo}</b>: ${deathOf(solo) ? (deathOf(solo).i === chIdx ? "dies in this chapter" : "died in " + deathOf(solo).ch.n) : sp ? (places[m][sp] ? "at " + sp : sp + ", off this map") : "not on stage"}<span id="soloOff" title="Show everyone">x</span>`; sbar.classList.add("show"); document.getElementById("soloOff").onclick = () => { solo = null; needFit = true; render(); const q = document.getElementById("search").value; if (q) showCharacter(q, true); }; }
+  else sbar.classList.remove("show");
+  const rs = document.getElementById("result"); if (rs.classList.contains("show")) { const q = document.getElementById("search").value; if (names && names.chars.includes(q)) showCharacter(q, true); else if (names && names.places.has(q)) showPlace(q, names.places.get(q), false); }
+  if (editMode) renderEdit();
+}
+
+// --- character card ---------------------------------------------------------
+function travelFor(who) {
+  const cur = positionsAt(chIdx);
+  const now = cur.pos[who];
+  let prev = null;
+  for (let k = chIdx - 1; k >= 0; k--) { const p = positionsAt(k).pos[who]; if (p !== undefined) { prev = p; break; } }
+  if (!now) return prev ? `Leaves the map (last seen at ${prev}).` : "Not on this map.";
+  if (prev === null) return `First appears at ${now}.`;
+  if (prev === now) return `Stays at ${now}.`;
+  if (!prev) return `Returns to the map at ${now}.`;
+  return `Travels from ${prev} to ${now}.`;
+}
+function showCard(who, ev) {
+  const ch = book.chapters[chIdx];
+  const S = ((window.SUMMARIES || {})[book.id] || {})[ch.n] || {};
+  const note = (S.who || {})[who] || (ch.where && who in ch.where ? "" : "No change this chapter.");
+  const pos = positionsAt(chIdx).pos[who];
+  const ic = ICONS[who], col = colorFor(who);
+  const big = ic ? `<div class="big" style="border-color:${col}"><img src="icons/${ic}" alt=""></div>` : `<div class="big" style="border-color:${col};background:${col}">${initials(who)}</div>`;
+  document.getElementById("card").innerHTML = `<div class="head">${big}<div><div class="name">${who}</div>${(window.LINEAGE || {})[who] ? `<div class="lin">${window.LINEAGE[who]}</div>` : ""}<div class="at">${pos ? "At " + pos : "Off the map"} -- ${ch.n}</div></div></div>${note ? `<div>${note}</div>` : ""}<div class="travel"><b>${travelFor(who)}</b></div>`;
+  document.getElementById("card").classList.add("show");
+  moveCard(ev);
+}
+function moveCard(ev) {
+  const c = document.getElementById("card"); if (!c.classList.contains("show")) return;
+  const w = 300, h = c.offsetHeight || 160;
+  let x = ev.clientX + 18, y = ev.clientY + 18;
+  if (x + w > window.innerWidth - 8) x = ev.clientX - w - 18;
+  if (y + h > window.innerHeight - 8) y = window.innerHeight - h - 8;
+  c.style.left = x + "px"; c.style.top = y + "px";
+}
+function hideCard() { document.getElementById("card").classList.remove("show"); }
+
+// --- edit mode -------------------------------------------------------------
+function renderEdit() {
+  layers.edit.clearLayers();
+  const m = curMap, used = new Set();
+  for (const ch of book.chapters) { if (chapterMap(ch) !== m) continue; Object.values(ch.where || {}).forEach(p => used.add(p)); (ch.pins || []).forEach(p => used.add(p)); }
+  for (const [pl, pct] of Object.entries(places[m])) {
+    const mk = L.marker(toLL(m, pct), { draggable: true, icon: L.divIcon({ className: "", html: `<div class="pl${used.has(pl) ? "" : " unused"}">${pl}</div>`, iconAnchor: [0, 0] }) }).addTo(layers.edit);
+    mk.on("dragend", () => { places[m][pl] = toPct(m, mk.getLatLng()); saveEdits(); render(); });
+  }
+}
+function saveEdits() {
+  const diff = {};
+  for (const m in places) for (const [pl, v] of Object.entries(places[m])) { const o = (PLACES[m] || {})[pl]; if (!o || o[0] !== v[0] || o[1] !== v[1]) (diff[m] = diff[m] || {})[pl] = v; }
+  store.set("placeEdits", diff);
+}
+map.on("click", e => {
+  if (tracing) { tracing.pts.push(toPct(curMap, e.latlng)); drawTrace(); return; }
+  if (!editMode) return;
+  const name = prompt("New place name on this map:");
+  if (!name) return;
+  places[curMap][name] = toPct(curMap, e.latlng); saveEdits(); render();
+});
+function exportPlaces() {
+  const txt = "const PLACES = " + JSON.stringify(places, null, 1).replace(/\[\n\s+([\d.]+),\n\s+([\d.]+)\n\s+\]/g, "[$1, $2]") + ";\n";
+  navigator.clipboard.writeText(txt).then(() => alert("places.js content copied. Paste it over data/places.js."), () => prompt("Copy this:", txt));
+}
+
+// --- search ---------------------------------------------------------------------
+// Chapters in a book where a character is named (moves, appears, or leaves).
+function chaptersFor(b, who) {
+  const out = [];
+  b.chapters.forEach((ch, i) => { if (ch.where && who in ch.where) out.push({ i, ch, to: ch.where[who] }); });
+  return out;
+}
+function allNames() {
+  const chars = new Set(), places = new Map();
+  for (const b of BOOKS) for (const ch of b.chapters) for (const w of Object.keys(ch.where || {})) chars.add(w);
+  for (const m in PLACES) for (const pl of Object.keys(places[m] || PLACES[m])) { if (!places.has(pl)) places.set(pl, []); places.get(pl).push(m); }
+  for (const m in shapes) for (const pl of Object.keys(shapes[m])) { if (!places.has(pl)) places.set(pl, []); if (!places.get(pl).includes(m)) places.get(pl).push(m); }
+  return { chars: [...chars].sort(), places };
+}
+let names = null, selIdx = -1, lastMatches = [];
+function doSearch(q) {
+  names = names || allNames();
+  const box = document.getElementById("matches");
+  q = q.trim().toLowerCase();
+  if (!q) { box.classList.remove("show"); lastMatches = []; return; }
+  const score = n => { const l = n.toLowerCase(); return l.startsWith(q) ? 0 : l.includes(" " + q) ? 1 : l.includes(q) ? 2 : -1; };
+  const cs = names.chars.map(n => ({ n, s: score(n), kind: "character" })).filter(x => x.s >= 0);
+  const ps = [...names.places.keys()].map(n => ({ n, s: score(n), kind: "place", maps: names.places.get(n) })).filter(x => x.s >= 0);
+  lastMatches = [...cs, ...ps].sort((a, b) => a.s - b.s || a.n.localeCompare(b.n)).slice(0, 12);
+  selIdx = lastMatches.length ? 0 : -1;
+  box.innerHTML = lastMatches.map((x, i) => x.kind === "character"
+    ? `<div class="mt${i === selIdx ? " sel" : ""}" data-i="${i}"><span class="dot" style="border-color:${colorFor(x.n)}">${ICONS[x.n] ? `<img src="icons/${ICONS[x.n]}" alt="">` : ""}</span><span>${x.n}</span><span class="kind">${(window.LINEAGE[x.n] || "").split(",")[0]}</span></div>`
+    : `<div class="mt${i === selIdx ? " sel" : ""}" data-i="${i}"><span class="dot place"></span><span>${x.n}</span><span class="kind">place, ${x.maps.map(m => MAPS[m].short).join(", ")}</span></div>`).join("");
+  box.classList.toggle("show", lastMatches.length > 0);
+  box.querySelectorAll(".mt").forEach(d => d.onmousedown = e => { e.preventDefault(); pick(lastMatches[+d.dataset.i]); });
+}
+function pick(x) {
+  document.getElementById("matches").classList.remove("show");
+  document.getElementById("search").blur();
+  document.getElementById("search").value = x.n;
+  if (x.kind === "place") return showPlace(x.n, x.maps);
+  showCharacter(x.n);
+}
+function bookStatus(b, who) {
+  // where is `who` at the current chapter of book b (or at its end if not the current book)?
+  const chs = chaptersFor(b, who);
+  if (!chs.length) return null;
+  return chs;
+}
+function showCharacter(who, keepChapter) {
+  const r = document.getElementById("result");
+  const here = chaptersFor(book, who);
+  const pos = positionsAt(chIdx).pos[who];
+  const m = chapterMap(book.chapters[chIdx]);
+  const col = colorFor(who), ic = ICONS[who];
+  const big = ic ? `<div class="big" style="border-color:${col}"><img src="icons/${ic}" alt=""></div>` : `<div class="big" style="border-color:${col};background:${col}"></div>`;
+  let where;
+  if (pos === undefined) where = here.length ? `Not yet on stage in <b>${book.title}</b>. First appears at ${here[0].ch.n}, ${here[0].ch.title}.` : `Not in <b>${book.title}</b>.`;
+  else if (deathOf(who)) { const d = deathOf(who); where = d.i === chIdx ? `Dies${d.place ? " at <b>" + d.place + "</b>" : ""} in this chapter, ${d.ch.n}, ${d.ch.title}.` : `Died${d.place ? " at <b>" + d.place + "</b>" : ""} in ${d.ch.n}, ${d.ch.title}.`; }
+  else if (pos === "") where = `Off the map at this point in <b>${book.title}</b> (last seen ${lastPlace(who)}).`;
+  else where = places[m][pos] ? `At <b>${pos}</b> in ${book.chapters[chIdx].n}, ${book.chapters[chIdx].title}.` : `At <b>${pos}</b>, which is not on the ${MAPS[m].short} map shown for this chapter.`;
+  const deathN = ((window.DEATHS || {})[book.id] || {})[who];
+  const list = here.map(h => `<div class="${h.i === chIdx ? "cur" : ""}" data-i="${h.i}"><span>${h.ch.n}</span> ${h.ch.title} -- ${h.ch.n === deathN ? "dies" : h.to ? "to " + h.to : "leaves the map"}</div>`).join("");
+  const others = BOOKS.filter(b => b.id !== book.id && chaptersFor(b, who).length).map(b => { const c = chaptersFor(b, who); return `<div data-book="${b.id}" data-i="${c[0].i}">${b.title}: ${c.length} chapter${c.length > 1 ? "s" : ""}, from ${c[0].ch.n}</div>`; }).join("");
+  const soloBtn = here.length ? `<button class="solo${solo === who ? " on" : ""}" title="Show only this character and their full route">${solo === who ? "Following" : "Follow"}</button>` : "";
+  r.innerHTML = `<span class="close" title="Close">x</span><div class="rh">${big}<div><div class="rn">${who} ${soloBtn}</div><div class="rl">${window.LINEAGE[who] || ""}</div></div><span class="chev" data-sec="result" title="Collapse or expand">&#9660;</span></div>
+    <div class="rb"><div class="rw">${where}</div>
+    ${list ? `<div class="chs">${list}</div>` : ""}
+    ${others ? `<div class="other">Also in:${others}</div>` : ""}</div>`;
+  r.classList.add("show"); wireChevrons(r);
+  r.querySelector(".close").onclick = () => { r.classList.remove("show"); document.getElementById("search").value = ""; clearHighlight(); if (solo) { solo = null; render(); } };
+  const sb = r.querySelector(".solo"); if (sb) sb.onclick = () => { solo = solo === who ? null : who; needFit = true; render(); showCharacter(who, true); };
+  r.querySelectorAll(".chs div").forEach(d => d.onclick = () => { chIdx = +d.dataset.i; needFit = true; render(); showCharacter(who); focusOn(who); });
+  r.querySelectorAll(".other div").forEach(d => d.onclick = () => { loadBook(d.dataset.book, +d.dataset.i); showCharacter(who); focusOn(who); });
+  if (!keepChapter && pos) focusOn(who);
+}
+// Death of a character at or before the current chapter: {i, ch, place} or null (data/deaths.js).
+function deathOf(who) {
+  const n = ((window.DEATHS || {})[book.id] || {})[who]; if (!n) return null;
+  const i = book.chapters.findIndex(c => c.n === n); if (i < 0 || i > chIdx) return null;
+  let place = null; for (let k = i; k >= 0; k--) { const p = positionsAt(k).pos[who]; if (p) { place = p; break; } }
+  return { i, ch: book.chapters[i], place };
+}
+function lastPlace(who) {
+  for (let k = chIdx; k >= 0; k--) { const p = positionsAt(k).pos[who]; if (p) return p; }
+  return "nowhere";
+}
+function focusOn(who) {
+  const pos = positionsAt(chIdx).pos[who], m = curMap;
+  fitZoom = map.getBoundsZoom(mapBounds(), false);
+  if (!pos || !places[m][pos]) return;
+  const ll = toLL(m, places[m][pos]);
+  map.setView(ll, Math.max(map.getZoom(), fitZoom + 1), { animate: false });
+  map.panInsideBounds(mapBounds(), { animate: false });
+  setTimeout(() => { render(); const k = m + "|" + pos; if (!expanded.has(k)) { const n = Object.values(positionsAt(chIdx).pos).filter(p => p === pos).length; if (n > 1) { expanded.add(k); render(); } } showCard(who, { clientX: window.innerWidth * 0.6, clientY: 120 }); setTimeout(hideCard, 2500); }, 350);
+}
+function shapeBounds(m, pl) {
+  const sh = (shapes[m] || {})[pl];
+  if (sh) return L.latLngBounds(sh.pts.map(p => toLL(m, p)));
+  if (places[m][pl]) { const ll = toLL(m, places[m][pl]); return L.latLngBounds(ll, ll); }
+  return null;
+}
+// Ink pulse per map. t/full: luminance 0..1 where pixels start to light up / are fully lit (from
+// each map's histogram; parchment sits well above t). tint: the colour the ink pulses to, as
+// 0..1 RGB. peak: top opacity of the pulse. Defaults: white, 1.
+const INK = { thirdage: { t: .45, full: .25, tint: [.85, .70, .45], peak: .7 }, beleriand: { t: .30, full: .12 }, "beleriand-aged": { t: .42, full: .25 },
+              shire: { t: .68, full: .40 }, gondor: { t: .35, full: .15 }, numenor: { t: .40, full: .18 }, valinor: { t: .35, full: .18 } };
+let inkSeq = 0;
+// Masked ink pulse: the map image redrawn through a colour-matrix filter that keeps only its
+// dark (ink) pixels as white-with-alpha, masked to the shape with a feathered edge, then
+// pulsed with CSS opacity. Pure SVG, so it works from file:// where canvas pixels are tainted.
+function inkOverlay(m, pl, sh) {
+  const M = MAPS[m], W = M.w, H = M.h, alt = M.alt && altOn.has(m), file = alt ? M.alt : M.file;
+  const px = sh.pts.map(p => [p[0] / 100 * W, p[1] / 100 * H]);
+  // Precise per-feature paths from the map's vector source (data/shapes-svg.js) beat the rough
+  // trace when present: the mask is then the drawn feature itself, so only its ink lights up.
+  const SV = (typeof SHAPES_SVG === "object" ? SHAPES_SVG : {})[m], sv = SV && SV.shapes[pl];
+  const hw = sh.type === "area" ? 0 : (sh.w || 2) / 100 * W; // half-width of the band around a line, in image px
+  const feather = sv ? Math.max(2, W * 0.0006) : Math.max(3, W * 0.004), pad = (sv ? 0 : hw) + feather * 3 + (sv ? W * 0.002 : 0);
+  const bb = sv ? sv.bb : [Math.min(...px.map(p => p[0])), Math.min(...px.map(p => p[1])), Math.max(...px.map(p => p[0])), Math.max(...px.map(p => p[1]))];
+  const x0 = Math.max(0, bb[0] - pad), y0 = Math.max(0, bb[1] - pad), x1 = Math.min(W, bb[2] + pad), y1 = Math.min(H, bb[3] + pad);
+  const bw = x1 - x0, bh = y1 - y0, ink = INK[alt ? m + "-aged" : m] || INK[m] || { t: .55, full: .3 };
+  const { t, full } = ink, [tr, tg, tb] = ink.tint || [1, 1, 1], k = 1 / (t - full);
+  const id = "ink" + (++inkSeq), region = `x="${x0}" y="${y0}" width="${bw}" height="${bh}"`;
+  const pts = px.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+  const shapeEl = sv ? `<g transform="matrix(${SV.fit.join(",")})" fill="#fff" stroke="#fff" stroke-linejoin="round">${sv.paths.map(p =>
+      `<path transform="matrix(${p.m.join(",")})"${p.f === 0 ? ' fill="none"' : ""} stroke-width="${(W * 0.002 / (SV.fit[0] * Math.hypot(p.m[0], p.m[1]))).toFixed(2)}" d="${p.d}"/>`).join("")}</g>`
+    : sh.type === "area" ? `<polygon points="${pts}" fill="#fff"/>`
+    : `<polyline points="${pts}" fill="none" stroke="#fff" stroke-width="${hw * 2}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `${x0} ${y0} ${bw} ${bh}`); svg.setAttribute("preserveAspectRatio", "none");
+  svg.innerHTML = `<defs>
+    <filter id="${id}f" filterUnits="userSpaceOnUse" ${region} color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0 0 0 0 ${tr}  0 0 0 0 ${tg}  0 0 0 0 ${tb}  ${(-k * .2126).toFixed(4)} ${(-k * .7152).toFixed(4)} ${(-k * .0722).toFixed(4)} 0 ${(k * t).toFixed(4)}"/>
+    </filter>
+    <filter id="${id}b" filterUnits="userSpaceOnUse" ${region}><feGaussianBlur stdDeviation="${feather}"/></filter>
+    <mask id="${id}m" maskUnits="userSpaceOnUse" ${region}><g filter="url(#${id}b)">${shapeEl}</g></mask>
+  </defs>
+  <image href="${file}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none" filter="url(#${id}f)" mask="url(#${id}m)"/>`;
+  svg.style.setProperty("--peak", ink.peak || 1);
+  const b = L.latLngBounds(toLL(m, [x0 / W * 100, y0 / H * 100]), toLL(m, [x1 / W * 100, y1 / H * 100]));
+  return L.svgOverlay(svg, b, { className: "inkhl", interactive: false });
+}
+function highlight(pl) {
+  layers.hl.clearLayers(); hlName = pl;
+  const m = curMap, sh = (shapes[m] || {})[pl], col = "#d4a24c";
+  if (sh) {
+    const pts = sh.pts.map(p => toLL(m, p));
+    inkOverlay(m, pl, sh).addTo(layers.hl);
+    // The rough traced shape is only shown while editing it; the ink pulse is the highlight.
+    if (editMode) (sh.type === "area" ? L.polygon : L.polyline)(pts, { color: col, weight: 2, opacity: .8, fill: false, dashArray: "6 5", interactive: false }).addTo(layers.hl);
+    const c = L.latLngBounds(pts).getCenter();
+    L.marker(c, { icon: L.divIcon({ className: "", html: "", iconSize: [0, 0] }), interactive: false, keyboard: false }).bindTooltip(pl, { className: "hllbl", permanent: true, direction: "center" }).addTo(layers.hl);
+  } else if (places[m][pl]) {
+    const ll = toLL(m, places[m][pl]);
+    L.marker(ll, { icon: L.divIcon({ className: "", html: '<div class="hlpt"></div>', iconSize: [34, 34], iconAnchor: [17, 17] }), interactive: false, keyboard: false, zIndexOffset: 900 }).addTo(layers.hl);
+    L.marker(ll, { icon: L.divIcon({ className: "", html: '<div class="hlcore"></div>', iconSize: [10, 10], iconAnchor: [5, 5] }), interactive: false, keyboard: false, zIndexOffset: 901 }).bindTooltip(pl, { className: "hllbl", permanent: true, direction: "top", offset: [0, -8] }).addTo(layers.hl);
+  }
+}
+function clearHighlight() { layers.hl.clearLayers(); hlName = null; }
+// --- shape tracing (edit mode) ---
+let tracing = null; // { pl, type, pts }
+let traceLayer = null;
+function startTrace(pl, type) {
+  tracing = { pl, type, pts: [] }; if (traceLayer) traceLayer.remove(); traceLayer = L.layerGroup().addTo(map);
+  document.getElementById("soloBar").innerHTML = `Tracing <b>${pl}</b> as ${type}: click to add points, double-click to finish, Esc to cancel`; document.getElementById("soloBar").classList.add("show");
+}
+function drawTrace() {
+  traceLayer.clearLayers(); const pts = tracing.pts.map(p => toLL(curMap, p));
+  if (pts.length > 1) (tracing.type === "area" ? L.polygon : L.polyline)(pts, { color: "#ff5050", weight: 3, dashArray: "4 4", fillOpacity: .1 }).addTo(traceLayer);
+  pts.forEach(ll => L.circleMarker(ll, { radius: 4, color: "#ff5050", fillOpacity: 1 }).addTo(traceLayer));
+}
+function finishTrace(cancel) {
+  if (!tracing) return;
+  if (!cancel && tracing.pts.length >= 2) { (shapes[curMap] = shapes[curMap] || {})[tracing.pl] = { type: tracing.type, pts: tracing.pts }; saveShapes(); names = null; }
+  const pl = tracing.pl; tracing = null; if (traceLayer) { traceLayer.remove(); traceLayer = null; }
+  document.getElementById("soloBar").classList.remove("show"); if (solo) render();
+  if (!cancel) { highlight(pl); const nm = allNames(); showPlace(pl, nm.places.get(pl) || [curMap]); }
+}
+function saveShapes() { const diff = {}; for (const m in shapes) for (const [pl, v] of Object.entries(shapes[m])) { const o = (SHAPES[m] || {})[pl]; if (!o || JSON.stringify(o) !== JSON.stringify(v)) (diff[m] = diff[m] || {})[pl] = v; } store.set("shapeEdits", diff); }
+function exportShapes() {
+  const txt = "const SHAPES = " + JSON.stringify(shapes, null, 1).replace(/\[\n\s+([\d.]+),\n\s+([\d.]+)\n\s+\]/g, "[$1,$2]").replace(/\n\s+(\[[\d.,]+\]),?/g, (a, b) => a.includes(",") ? b + "," : b) + ";\n";
+  navigator.clipboard.writeText(txt).then(() => alert("shapes.js content copied. Paste it over data/shapes.js."), () => prompt("Copy this:", txt));
+}
+map.on("dblclick", e => { if (tracing) { L.DomEvent.stop(e); finishTrace(false); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && tracing) finishTrace(true); });
+function showPlace(pl, maps, fit = true) {
+  const r = document.getElementById("result");
+  const m = maps.includes(curMap) ? curMap : maps[0];
+  // who is here now, and every chapter in this book that sends someone here
+  const pos = positionsAt(chIdx).pos;
+  const here = Object.entries(pos).filter(([w, p]) => p === pl).map(([w]) => w);
+  // Chapters that matter here: curated events (data/place-events.js) plus anyone the chapter
+  // data sends here. Event lines past the current chapter stay hidden so nothing is spoiled.
+  const events = (window.PLACE_EVENTS || {})[pl] || [];
+  const byCh = {};
+  book.chapters.forEach((ch, i) => {
+    for (const [w, p] of Object.entries(ch.where || {})) if (p === pl) (byCh[i] = byCh[i] || { ch, who: [], ev: [] }).who.push(w);
+    for (const [b, n, t] of events) if (b === book.id && n === ch.n) (byCh[i] = byCh[i] || { ch, who: [], ev: [] }).ev.push(t);
+  });
+  const list = Object.entries(byCh).map(([i, v]) => { const later = +i > chIdx; const ev = v.ev.length ? (later ? `<span class="later">later</span>` : `<span class="ev">${v.ev.join("; ")}</span>`) : ""; const who = v.who.length ? `<span class="who">${v.who.join(", ")}</span>` : "";
+    return `<div class="${+i === chIdx ? "cur" : ""}" data-i="${i}"><span>${v.ch.n}</span> ${v.ch.title}${ev || who ? " -- " : ""}${[ev, who].filter(Boolean).join("; ")}</div>`; }).join("");
+  const others = BOOKS.filter(b => b.id !== book.id).map(b => { const idx = []; b.chapters.forEach((ch, i) => { if (Object.values(ch.where || {}).includes(pl) || events.some(e => e[0] === b.id && e[1] === ch.n)) idx.push(i); });
+    return idx.length ? `<div data-book="${b.id}" data-i="${idx[0]}">${b.title}: ${idx.length} chapter${idx.length > 1 ? "s" : ""}, from ${b.chapters[idx[0]].n}</div>` : ""; }).join("");
+  const sh = (shapes[m] || {})[pl];
+  const kind = sh ? (sh.type === "area" ? "region" : "river, road or range") : "place";
+  const traceBtns = editMode ? `<div class="trace"><button data-t="line">Trace line</button><button data-t="area">Trace area</button>${sh ? '<button data-t="clear">Clear shape</button>' : ""}</div>` : "";
+  // Jump to another map this place is on, keeping the chapter: positions are sticky and already
+  // known at this chapter, so whoever stands at a place drawn on that map shows up, nobody else.
+  const otherMaps = maps.filter(x => x !== curMap);
+  const jumpBtns = otherMaps.length ? `<div class="jump">${otherMaps.map(x => `<button data-m="${x}">View on the ${MAPS[x].short} map</button>`).join("")}</div>` : "";
+  r.innerHTML = `<span class="close" title="Close">x</span><div class="rh"><div style="flex:1"><div class="rn">${pl}</div><div class="rl">${kind} on the ${maps.map(x => MAPS[x].short).join(" and ")} map${maps.length > 1 ? "s" : ""}</div></div><span class="chev" data-sec="result" title="Collapse or expand">&#9660;</span></div>
+    <div class="rb">${jumpBtns}${traceBtns}
+    <div class="rw">${here.length ? "Here now: <b>" + here.join(", ") + "</b>" : "Nobody here at this chapter."}</div>
+    ${list ? `<div class="chs">${list}</div>` : `<div class="chs"><div>Nothing recorded here in ${book.title}.</div></div>`}
+    ${others ? `<div class="other">Also in:${others}</div>` : ""}</div>`;
+  r.classList.add("show"); wireChevrons(r);
+  r.querySelectorAll(".other div").forEach(d => d.onclick = () => { loadBook(d.dataset.book, +d.dataset.i); const nm = allNames(); showPlace(pl, nm.places.get(pl) || maps); });
+  r.querySelector(".close").onclick = () => { r.classList.remove("show"); document.getElementById("search").value = ""; clearHighlight(); };
+  r.querySelectorAll(".chs div[data-i]").forEach(d => d.onclick = () => { chIdx = +d.dataset.i; needFit = false; render(); showPlace(pl, maps, false); });
+  r.querySelectorAll(".jump button").forEach(b => b.onclick = () => { mapJump = b.dataset.m === chapterMap(book.chapters[chIdx]) ? null : b.dataset.m; needFit = false; render(); showPlace(pl, maps); });
+  r.querySelectorAll(".trace button").forEach(b => b.onclick = () => { if (b.dataset.t === "clear") { delete shapes[m][pl]; saveShapes(); names = null; highlight(pl); showPlace(pl, maps); } else startTrace(pl, b.dataset.t); });
+  if (m !== curMap) return;
+  highlight(pl);
+  const b = fit && shapeBounds(m, pl);
+  if (b) {
+    fitZoom = map.getBoundsZoom(mapBounds(), false);
+    const cap = Math.min(fitZoom + 1, -0.75);                 // gentle: at most one step in from the whole map
+    if (b.getNorth() === b.getSouth()) map.setView(b.getCenter(), Math.min(Math.max(map.getZoom(), fitZoom + 0.75), cap), { animate: false });
+    else map.fitBounds(b, { padding: [120, 120], maxZoom: cap, animate: false });
+    if (map.getZoom() < fitZoom) map.setZoom(fitZoom, { animate: false });
+    map.panInsideBounds(mapBounds(), { animate: false });
+  }
+}
+// Collapsible panel sections (the character result and the chapter text); state persists.
+const collapsed = new Set(store.get("collapsed", []));
+const SEC = { result: "result", chapter: "chapterBar" };
+function applyCollapse() { for (const k in SEC) document.getElementById(SEC[k]).classList.toggle("collapsed", collapsed.has(k)); }
+function wireChevrons(root) { root.querySelectorAll(".chev").forEach(c => c.onclick = e => { e.stopPropagation(); const k = c.dataset.sec; collapsed.has(k) ? collapsed.delete(k) : collapsed.add(k); store.set("collapsed", [...collapsed]); applyCollapse(); }); }
+wireChevrons(document.getElementById("chapterBar")); applyCollapse();
+const searchEl = document.getElementById("search");
+searchEl.oninput = () => doSearch(searchEl.value);
+searchEl.onfocus = () => doSearch(searchEl.value);
+searchEl.onblur = () => setTimeout(() => document.getElementById("matches").classList.remove("show"), 150);
+searchEl.onkeydown = e => {
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!lastMatches.length) return; selIdx = (selIdx + (e.key === "ArrowDown" ? 1 : -1) + lastMatches.length) % lastMatches.length; document.querySelectorAll("#matches .mt").forEach((d, i) => d.classList.toggle("sel", i === selIdx)); }
+  else if (e.key === "Enter") { e.preventDefault(); if (selIdx >= 0) pick(lastMatches[selIdx]); }
+  else if (e.key === "Escape") { searchEl.value = ""; doSearch(""); document.getElementById("result").classList.remove("show"); clearHighlight(); searchEl.blur(); }
+};
+document.addEventListener("keydown", e => { if (e.key === "/" && e.target.tagName !== "INPUT") { e.preventDefault(); searchEl.focus(); searchEl.select(); } });
+
+// --- wiring -------------------------------------------------------------------
+function loadBook(id, idx) {
+  book = BOOKS.find(b => b.id === id) || BOOKS[0]; _chars = null;
+  if (solo && !book.chapters.some(c => c.where && solo in c.where)) solo = null;
+  chIdx = Math.min(idx || 0, book.chapters.length - 1);
+  const sl = document.getElementById("slider"); sl.max = book.chapters.length - 1;
+  const cs = document.getElementById("chapterSel"); cs.innerHTML = "";
+  book.chapters.forEach((c, i) => { const o = document.createElement("option"); o.value = i; o.textContent = `${c.n}  ${c.title}`; cs.appendChild(o); });
+  document.getElementById("book").value = book.id;
+  needFit = true;
+  render();
+}
+map.on("zoomend", () => { if (book) render(); });
+const bookSel = document.getElementById("book");
+BOOKS.forEach(b => { const o = document.createElement("option"); o.value = b.id; o.textContent = b.title; bookSel.appendChild(o); });
+bookSel.onchange = () => loadBook(bookSel.value, 0);
+document.getElementById("slider").oninput = e => { chIdx = +e.target.value; needFit = true; render(); };
+document.getElementById("chapterSel").onchange = e => { chIdx = +e.target.value; needFit = true; render(); };
+document.getElementById("prev").onclick = () => { if (chIdx > 0) { chIdx--; needFit = true; render(); } };
+document.getElementById("next").onclick = () => { if (chIdx < book.chapters.length - 1) { chIdx++; needFit = true; render(); } };
+document.addEventListener("keydown", e => { if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return; if (e.key === "ArrowLeft") document.getElementById("prev").click(); if (e.key === "ArrowRight") document.getElementById("next").click(); });
+document.getElementById("toggleFit").onclick = e => { autoFit = !autoFit; store.set("autoFit", autoFit); e.target.classList.toggle("on", autoFit); if (autoFit) { needFit = true; render(); } };
+document.getElementById("togglePaths").onclick = e => { showPaths = !showPaths; e.target.classList.toggle("on", showPaths); render(); };
+document.getElementById("toggleLabels").onclick = e => { showLabels = !showLabels; e.target.classList.toggle("on", showLabels); render(); };
+document.getElementById("toggleEdit").onclick = e => { editMode = !editMode; e.target.classList.toggle("on", editMode); layers.edit.clearLayers(); document.getElementById("exportBtn").style.display = document.getElementById("resetBtn").style.display = document.getElementById("exportShapesBtn").style.display = editMode ? "" : "none"; render(); if (hlName) { const nm = allNames(); showPlace(hlName, nm.places.get(hlName) || [curMap]); } };
+document.getElementById("exportBtn").onclick = exportPlaces;
+document.getElementById("exportShapesBtn").onclick = exportShapes;
+document.getElementById("toggleNames").onclick = () => { showNames = !showNames; store.set("mapNames", showNames); setMap(curMap, true); if (hlName) highlight(hlName); };
+document.getElementById("toggleAlt").onclick = () => { altOn.has(curMap) ? altOn.delete(curMap) : altOn.add(curMap); store.set("altMaps", [...altOn]); setMap(curMap, true); if (hlName) highlight(hlName); };
+document.getElementById("resetBtn").onclick = () => { if (confirm("Discard all dragged/added places?")) { places = JSON.parse(JSON.stringify(PLACES)); store.set("placeEdits", null); render(); } };
+const qs = new URLSearchParams(location.search);
+if (qs.get("still")) document.body.classList.add("still");
+if (qs.get("labels")) { showLabels = true; document.getElementById("toggleLabels").classList.add("on"); }
+document.getElementById("toggleFit").classList.toggle("on", autoFit);
+const last = store.get("last", null);
+if (qs.get("book")) loadBook(qs.get("book"), +(qs.get("ch") || 0));
+else loadBook(last ? last.book : BOOKS[0].id, last ? last.ch : 0);
+// ?zoom=N&at=x,y (image percent) or &at=Place: a fixed view for screenshots; auto-fit is off for the session.
+if (qs.get("zoom") && !qs.get("q")) { autoFit = false; setTimeout(() => { const at = qs.get("at") || ""; const pc = at.includes(",") ? at.split(",").map(Number) : places[curMap][at]; const c = pc ? toLL(curMap, pc) : map.getCenter(); fitZoom = map.getBoundsZoom(mapBounds(), false); map.setView(c, fitZoom + (+qs.get("zoom")), { animate: false }); render(); }, 1500); }
+if (qs.get("open")) setTimeout(() => { expanded.add(curMap + "|" + qs.get("open")); render(); }, 400);
+if (qs.get("selftest")) setTimeout(() => {
+  const errs = [], log = (m) => errs.push(m);
+  const t0 = Date.now();
+  try {
+    for (const b of BOOKS) {
+      loadBook(b.id, 0);
+      for (let i = 0; i < b.chapters.length; i++) { try { chIdx = i; render(); } catch (e) { log(`render ${b.id} ${b.chapters[i].n}: ${e.message}`); } }
+      for (const mid of Object.keys(MAPS)) { try { chIdx = 0; render(); mapJump = mid; render(); } catch (e) { log(`jump ${b.id} ${mid}: ${e.message}`); } finally { mapJump = null; } }
+      // every character that appears in this book, searched at the last chapter
+      names = names || allNames();
+      for (const who of names.chars) { if (!chaptersFor(b, who).length) continue; try { showCharacter(who, true); } catch (e) { log(`showCharacter ${b.id} ${who}: ${e.message}`); } }
+      // follow mode across all chapters for a few
+      for (const who of names.chars.slice(0, 40)) { if (!chaptersFor(b, who).length) continue; solo = who; for (let i = 0; i < b.chapters.length; i++) { try { chIdx = i; render(); } catch (e) { log(`solo ${b.id} ${who} ${b.chapters[i].n}: ${e.message}`); break; } } }
+      solo = null;
+      // every place
+      for (const [pl, maps] of names.places) { try { showPlace(pl, maps); } catch (e) { log(`showPlace ${b.id} ${pl}: ${e.message}`); } }
+      // expand every pile at every chapter
+      for (let i = 0; i < b.chapters.length; i++) { chIdx = i; render(); const pos = positionsAt(i).pos; const m = chapterMap(b.chapters[i]); const groups = {}; for (const [w, p] of Object.entries(pos)) if (p && places[m][p]) (groups[p] = groups[p] || []).push(w); for (const [pl, whos] of Object.entries(groups)) if (whos.length > 1) { expanded.add(m + "|" + pl); try { render(); } catch (e) { log(`tray ${b.id} ${b.chapters[i].n} ${pl}: ${e.message}`); } } expanded.clear(); }
+      // search for each name prefix
+      for (const q of ["ga", "fro", "min", "x", "the", "'", "th", "Morgoth", "Haudh"]) { try { doSearch(q); } catch (e) { log(`doSearch ${q}: ${e.message}`); } }
+      // travel text and card for everyone present at every chapter
+      for (let i = 0; i < b.chapters.length; i++) { chIdx = i; const pos = positionsAt(i).pos; for (const who of Object.keys(pos)) { try { travelFor(who); showCard(who, { clientX: 500, clientY: 300 }); hideCard(); } catch (e) { log(`card ${b.id} ${b.chapters[i].n} ${who}: ${e.message}`); } } }
+    }
+    // data sanity: every "where" value resolves on its chapter's map or is a known place on some map
+    for (const b of BOOKS) for (const ch of b.chapters) { const m = ch.map || b.map; for (const [w, pl] of Object.entries(ch.where || {})) { if (!pl) continue; if (!places[m][pl]) { const anywhere = Object.values(places).some(t => t[pl]); log(`${anywhere ? "offmap" : "UNKNOWN"} ${b.id} ${ch.n} ${w} -> ${pl} (${m})`); } } for (const pl of ch.pins || []) if (!places[m][pl]) log(`pin ${b.id} ${ch.n} ${pl} not on ${m}`); }
+    // summaries coverage
+    for (const b of BOOKS) for (const ch of b.chapters) { const S = (window.SUMMARIES[b.id] || {})[ch.n]; if (!S || !S.summary) log(`nosummary ${b.id} ${ch.n}`); }
+    // icons and lineage coverage
+    for (const who of names.chars) { if (!ICONS[who]) log(`noicon ${who}`); if (!window.LINEAGE[who]) log(`nolineage ${who}`); }
+  } catch (e) { log("FATAL " + e.message + " " + e.stack); }
+  const el = document.createElement("pre"); el.id = "selftest"; el.textContent = `done in ${Date.now() - t0}ms, ${errs.length} findings\n` + errs.join("\n"); document.body.appendChild(el);
+}, 800);
+if (qs.get("q")) setTimeout(() => { searchEl.value = qs.get("q"); doSearch(qs.get("q")); if (lastMatches.length) pick(lastMatches[0]); if (qs.get("jump")) { const jb = document.querySelector("#result .jump button"); if (jb) jb.click(); } if (qs.get("zoom")) setTimeout(() => map.setZoom(fitZoom + (+qs.get("zoom")), { animate: false }), 1500); if (qs.get("follow")) { solo = qs.get("q"); render(); showCharacter(solo, true); } }, 600);
+if (qs.get("card")) setTimeout(() => showCard(qs.get("card"), { clientX: 700, clientY: 300 }), 500);
+if (qs.get("hover")) setTimeout(() => { const d = document.querySelector(`.tm[data-who="${qs.get("hover")}"]`); if (d) d.dispatchEvent(new MouseEvent("mouseenter", { clientX: 900, clientY: 250 })); }, 900);
+</script>
+</body>
+</html>

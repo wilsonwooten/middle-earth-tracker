@@ -1,0 +1,42 @@
+Reference: Christopher Tolkien's "Part of Gondor, Rohan and Mordor" (The Return of the King),
+a black-and-white scan, upscaled 4x before attaching. First attempt, with labels; the
+render spelled a third of them wrong, so the terrain-only prompt replaced it.
+
+---
+
+The attached image is a black-and-white line map of Gondor, Rohan and Mordor. Redraw it as a
+hand-painted illustrated fantasy atlas map at the highest resolution you can, keeping the SAME
+framing and aspect ratio as the attachment (roughly 5:4, not widescreen). Ignore the compass
+rose, the frame border and the initials in the top-right corner.
+
+Geography: keep every coastline, river, mountain range, forest, marsh, road, dotted border and
+settlement mark in exactly the position it has in the attachment. Do not add, move, merge or
+invent any feature. Contour lines become painted relief: grey-white peaks with shaded slopes
+for Ered Nimrais, Ephel Duath and Ered Lithui, ash-grey and red-black for the Plateau of
+Gorgoroth and Udun, a lone cone with a red glow for Mount Doom where the attachment marks
+Orodruin, a dark tower where it marks Barad-dur. Green and gold lowlands, dark green painted
+forests (Firien Wood, Druadan Forest, Grey Wood), blue rivers with the Anduin broad, blue-green
+sea in the bottom-left, reedy marsh texture for Nindalf and the Dead Marshes, a muted parchment
+feel. Style: professional fantasy atlas page, painted terrain, no cartoon shading.
+
+Labels: use ONLY the names below, spelled exactly as written, each placed where the attachment
+has it, in a clean serif font, large for regions and small for places. No other text anywhere.
+Do not duplicate a label, do not abbreviate, do not add words.
+
+Regions (large, spaced letters): ROHAN, GONDOR, MORDOR, ANORIEN, LEBENNIN, LAMEDON,
+DOR-EN-ERNIL, BELFALAS, NORTH ITHILIEN, SOUTH ITHILIEN, NURN, EASTFOLD, FOLDE, FENMARCH,
+NINDALF or WETWANG, DAGORLAD (Battle Plain), PLATEAU OF GORGOROTH, UDUN, EMYN MUIL,
+EMYN ARNEN, LOSSARNACH
+Mountains and hills: ERED NIMRAIS, EPHEL DUATH (Mountains of Shadow), ERED LITHUI
+(Ash Mountains), Morgai, Halifirien, Calenhad, Min-Rimmon, Erelas, Nardol, Eilenach,
+Amon Din, Mount Doom (Orodruin), Tarlang's Neck
+Rivers and water: Anduin (The Great River), River Entwash, Mouths of Entwash, Snowbourn,
+Mering Stream, River Erui, River Sirith, River Celos, River Gilrain, River Serni, River Ringlo,
+River Kiril, Morthond, River Poros, Ethir Anduin (Mouths of Anduin), Falls of Rauros,
+Dead Marshes
+Forests: Firien Wood, Druadan Forest, Grey Wood
+Settlements and sites: Edoras, Dunharrow, Entwade, Erech, Calembel, Ethring, Linhir, Pelargir,
+Minas Tirith, Osgiliath, Minas Morgul, Cirith Ungol, Cair Andros, Henneth Annun, Morannon,
+Isenmouthe, Durthang, Barad-dur (The Dark Tower), Crossings of Erui, Crossings of Poros,
+Stonewain Valley
+Roads and borders: Great West Road, The Harad Road, Border of Rohan

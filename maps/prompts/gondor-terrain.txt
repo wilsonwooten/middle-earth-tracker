@@ -1,0 +1,39 @@
+Reference: the same scan as gondor-labelled.txt, upscaled 4x before attaching. Terrain
+only; the app draws the names itself (data/labels-gondor.js). This is the prompt behind
+maps/gondor.jpg, followed by the fix pass at the bottom.
+
+---
+
+The attached image is a black-and-white line map. Redraw it as a hand-painted illustrated
+fantasy atlas map WITH NO TEXT OF ANY KIND: no names, no letters, no numbers, no compass, no
+border, no signature. Terrain only. Keep the SAME framing and aspect ratio as the attachment
+(roughly 5:4, not widescreen), at the highest resolution you can.
+
+Keep every coastline, river, lake, mountain range, forest, marsh, road, dotted border line and
+settlement mark in exactly the position it has in the attachment. Do not add, move, merge or
+invent any feature; in particular do not add forests, lakes, towns or a second volcano
+anywhere the attachment does not draw one. The attachment's contour lines become painted
+relief: grey-white peaks with shaded slopes for the long mountain range across the middle-left
+and the two ranges that wall the dark region on the right; ash-grey and red-black ground
+inside that walled region, with one lone volcanic cone with a red glow at the small black
+triangle the attachment marks there, and one dark tower at the tower mark to its east. Green
+and gold lowlands elsewhere, painted dark green trees only where the attachment draws tree
+symbols (three small woods along the mountains, nothing else), blue rivers with the big river
+broad, a blue-green sea in the bottom-left, reedy marsh texture in the two stippled marsh
+areas at the top, thin brown roads and dotted borders exactly as drawn, small settlement marks
+as tiny drawn buildings or dots in the same spots. Muted parchment feel, professional fantasy
+atlas style, painted terrain, no cartoon shading. Remember: no text anywhere on the image.
+
+=== Fix pass on the first terrain-only render ===
+Edit the attached map. Keep everything exactly as it is, same size, same framing, no text,
+except these four corrections:
+
+1. Bottom-right corner: remove the snow-capped mountain range east of the long north-south
+   range. That ground is a flat dark ash plain, the same ash-grey as the rest of the dark
+   region, with no peaks.
+2. Top-right corner: the blue lake is wrong. Replace it with a low rounded hill in the same
+   spot, painted like the other hills, no water.
+3. The small blue pond between the marshes and the walled ring to its east is wrong. Replace
+   it with low hills, no water.
+4. Remove the dark fence with posts that runs along the south edge of the ash plateau and
+   around the walled ring. Where it ran, draw a thin brown road, like the other roads.
