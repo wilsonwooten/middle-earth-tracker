@@ -117,6 +117,8 @@ Do not hand-edit these; change the input and rerun the tool from the repo root.
 
 Run `python3 tools/validate.py` and `?selftest=1` before opening a pull request; the
 `Check` workflow runs both on every push and pull request, and `Pages` deploys `main`.
+`main` only takes changes through a pull request whose Check run is green; that applies
+to the maintainer too, so work on a branch and open a PR.
 
 ## Licenses
 
